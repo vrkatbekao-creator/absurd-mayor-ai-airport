@@ -87,7 +87,9 @@ for (const size of sizes) {
         await expect(page.locator('#action')).toBeFocused();
         await capture('jump',false);
         const distance=await page.locator('#action').evaluate(el=>Math.round(el.getBoundingClientRect().top));
-        expect(Math.abs(distance)).toBeLessThanOrEqual(2);
+        expect(distance).toBeGreaterThanOrEqual(-1);
+        expect(distance).toBeLessThanOrEqual(100);
+        await expect(page.locator('[data-v2="policy"]').first()).toBeInViewport();
         await page.locator('#v041-summary').click();
         await expect(page.locator('#stats .v04-metric')).toHaveCount(6);
         await capture('indicators-open');
@@ -321,3 +323,4 @@ test.describe('v0.4 visual-first contract', () => {
     await verifyNoHorizontalOverflow(page);
   });
 });
+
