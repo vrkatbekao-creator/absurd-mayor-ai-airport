@@ -76,12 +76,47 @@ for (const size of sizes) {
         await expect(page.locator('#map .tile')).toHaveCount(9);
         await expect(page.locator('#action [data-v2="policy"]')).toHaveCount(3);
         await verifyNoHorizontalOverflow(page);
+        const visual = await page.evaluate(() => {
+          const seal = document.querySelector('.seal');
+          const sealRect = seal.getBoundingClientRect();
+          const titleRect = document.querySelector('.brand h1').getBoundingClientRect();
+          return {
+            seal: seal.textContent.trim(),
+            sealWidth: sealRect.width,
+            sealHeight: sealRect.height,
+            titleStartsAfterSeal: titleRect.left >= sealRect.right,
+            viewportWidth: innerWidth
+          };
+        });
+        expect(visual.seal).toMatch(/^(大餅|DB)$/);
+        expect(visual.sealWidth).toBeGreaterThanOrEqual(47);
+        expect(visual.sealHeight).toBeGreaterThanOrEqual(47);
+        expect(visual.titleStartsAfterSeal, 'Logo must not overlap title').toBe(true);
 
         await press(page, page.locator('[data-v2="policy"]').first(), touch);
         await expect(page.locator('[data-v2="tile"]')).toHaveCount(9);
         await press(page, page.locator('[data-v2="tile"][data-index="0"]'), touch);
         await expect(page.locator('[data-v2="build"]')).toHaveCount(7);
         await verifyNoHorizontalOverflow(page);
+        if (size.width === 390) {
+          const mobile = await page.evaluate(() => {
+            const tile = document.querySelector('.tile.selected');
+            const shortName = tile.querySelector('.tile-name-short');
+            const tileRect = tile.getBoundingClientRect();
+            const nameRect = shortName.getBoundingClientRect();
+            const choice = document.querySelector('.choice small');
+            return {
+              shortNameShown: getComputedStyle(shortName).display !== 'none',
+              shortNameInsideTile: nameRect.left >= tileRect.left - 1 && nameRect.right <= tileRect.right + 1,
+              choiceInfoFont: parseFloat(getComputedStyle(choice).fontSize),
+              selectedTicks: (tile.querySelector('.icon').textContent.match(/✓/g) || []).length
+            };
+          });
+          expect(mobile.shortNameShown).toBe(true);
+          expect(mobile.shortNameInsideTile).toBe(true);
+          expect(mobile.choiceInfoFont).toBeGreaterThanOrEqual(13);
+          expect(mobile.selectedTicks).toBe(1);
+        }
 
         const dir = path.join(screenDir, info.project.name);
         mkdirSync(dir, { recursive: true });
