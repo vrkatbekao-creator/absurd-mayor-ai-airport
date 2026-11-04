@@ -6,7 +6,7 @@ on:
       - test/issue2-browser-playtest
   pull_request:
     paths:
-      - '荒謬市長_v0.2.html'
+      - '荒謬市長_v0.3.html'
       - 'tests/browser-playtest.spec.cjs'
       - 'tests/playwright.config.cjs'
       - '.github/workflows/browser-playtest.yml'
