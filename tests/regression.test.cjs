@@ -10,7 +10,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 
-const filename = path.join(__dirname, '..', '荒謬市長_v0.2.html');
+const filename = path.join(__dirname, '..', '荒謬市長_v0.3.html');
 const html = fs.readFileSync(filename, 'utf8');
 
 function loadGame() {
