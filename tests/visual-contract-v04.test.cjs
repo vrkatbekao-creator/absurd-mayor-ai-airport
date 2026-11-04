@@ -98,3 +98,18 @@ test('v0.4 presentation does not mutate v0.3 financial, policy or ending model',
  assert.ok(original.length>12000);
  assert.equal(v04,original,'core economics, promises and civic actions must be identical to stable v0.3');
 });
+
+test('airport grounding and insufficient power are flagged without hiding labels',()=>{
+ const {newGame,metrics,v04MapTile}=api();
+ const g=newGame();
+ g.tiles[1]={icon:'🧠',name:'資料中心',type:'data',traffic:0,level:1};
+ let m=metrics(g);
+ assert.equal(m.traffic,0,'runway removal grounds airport');
+ assert.match(v04MapTile(g.tiles[1],1,m),/is-grounded/);
+ g.tiles[3]={icon:'🧠',name:'資料中心',type:'data',traffic:0,level:1};
+ g.tiles[4]={icon:'🧠',name:'資料中心',type:'data',traffic:0,level:1};
+ m=metrics(g);
+ assert.ok(m.demand>m.supply);
+ assert.match(v04MapTile(g.tiles[3],3,m),/is-blackout/);
+ assert.match(v04MapTile(g.tiles[3],3,m),/aria-label=/);
+});
