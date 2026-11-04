@@ -1,0 +1,44 @@
+name: Issue 2 browser playtest
+
+on:
+  push:
+    branches:
+      - test/issue2-browser-playtest
+  pull_request:
+    paths:
+      - '荒謬市長_v0.2.html'
+      - 'tests/browser-playtest.spec.cjs'
+      - 'tests/playwright.config.cjs'
+      - '.github/workflows/browser-playtest.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browsers:
+    name: Browser QA (Chromium, Firefox, WebKit)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright test runner
+        run: npm install --no-save --package-lock=false @playwright/test@1.56.1
+      - name: Install browsers and OS dependencies
+        run: npx playwright install --with-deps chromium firefox webkit
+      - name: Run browser checks
+        run: npx playwright test -c tests/playwright.config.cjs
+      - name: Upload screenshots, test output, accessibility diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue2-browser-qa
+          path: |
+            artifacts/screenshots/
+            artifacts/playwright-report/
+            artifacts/test-results/
+          if-no-files-found: warn
+          retention-days: 14
