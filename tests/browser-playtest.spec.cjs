@@ -81,6 +81,8 @@ for (const size of sizes) {
         await expect(page.locator('[data-v2="tile"]')).toHaveCount(9);
         await press(page, page.locator('[data-v2="tile"][data-index="0"]'), touch);
         await expect(page.locator('[data-v2="build"]')).toHaveCount(6);
+        await expect(page.locator('.action-tabs .action-tab')).toHaveCount(3);
+        await expect(page.locator('#action .forecast')).toHaveCount(6);
         await verifyNoHorizontalOverflow(page);
 
         const dir = path.join(screenDir, info.project.name);
@@ -108,12 +110,15 @@ test.describe('full interactive playthrough and persistence', () => {
       await expect(page.locator('#action [data-v2="policy"]')).toHaveCount(3);
       await page.locator('#action [data-v2="policy"]').first().click();
       await page.locator('#map [data-v2="tile"][data-index="8"]').click();
-      await page.locator('[data-v2="defer"]').click();
+      await page.locator('[data-v2="action-tab"][data-tab="defer"]').click();
+    await page.locator('[data-v2="defer"]').click();
       await page.locator('[data-v2="settle"]').click();
       if (turn < 12) await expect(page.locator('.round b')).toHaveText(String(turn + 1).padStart(2, '0'));
     }
     await expect(page.locator('#endtitle')).toBeVisible();
     await expect(page.locator('#modal .result')).toBeVisible();
+    await expect(page.locator('#modal .audit-row')).toHaveCount(3);
+    await expect(page.locator('#modal .audit')).toBeVisible();
     mkdirSync(path.join(screenDir, 'chromium'), { recursive: true });
     const picture = path.join(screenDir, 'chromium', 'final-result.png');
     await page.screenshot({ path: picture, fullPage: true });
@@ -136,7 +141,10 @@ test.describe('full interactive playthrough and persistence', () => {
     await expect(page.locator('html')).toHaveAttribute('lang', 'nl');
     await expect(page.locator('.lang select')).toHaveValue('nl');
     await expect(page.locator('[data-v2="build"]')).toHaveCount(6);
+        await expect(page.locator('.action-tabs .action-tab')).toHaveCount(3);
+        await expect(page.locator('#action .forecast')).toHaveCount(6);
     await expect(page.locator('#map [data-index="3"]')).toHaveAttribute('aria-pressed', 'true');
+    await page.locator('[data-v2="action-tab"][data-tab="defer"]').click();
     await page.locator('[data-v2="defer"]').click();
     await page.locator('[data-v2="settle"]').click();
     await expect(page.locator('.round b')).toHaveText('02');
@@ -166,6 +174,8 @@ test.describe('full interactive playthrough and persistence', () => {
     await page.locator('[data-v2="policy"]').first().click();
     await page.locator('[data-v2="tile"][data-index="0"]').click();
     await expect(page.locator('[data-v2="build"]')).toHaveCount(6);
+        await expect(page.locator('.action-tabs .action-tab')).toHaveCount(3);
+        await expect(page.locator('#action .forecast')).toHaveCount(6);
     await page.locator('[data-v2="build"][data-type="lab"]').click();
     await page.locator('[data-v2="settle"]').click();
     await page.locator('[data-v2="policy"]').first().click();
@@ -177,10 +187,13 @@ test.describe('full interactive playthrough and persistence', () => {
     await page.locator('[data-v2="policy"]').first().click();
     await page.locator('[data-v2="tile"][data-index="0"]').click();
     await expect(page.locator('[data-v2="upgrade"]')).toHaveCount(0);
+    await page.locator('[data-v2="action-tab"][data-tab="admin"]').click();
     await page.locator('[data-v2="admin"][data-type="research"]').click();
     await page.locator('[data-v2="settle"]').click();
     await page.locator('[data-v2="policy"]').first().click();
+    await page.locator('[data-v2="action-tab"][data-tab="admin"]').click();
     await expect(page.locator('[data-v2="admin"][data-type="research"]')).toBeDisabled();
+    await page.locator('[data-v2="action-tab"][data-tab="defer"]').click();
     await page.locator('[data-v2="defer"]').click();
     await page.locator('[data-v2="settle"]').click();
     await expect(page.locator('.round b')).toHaveText('05');
