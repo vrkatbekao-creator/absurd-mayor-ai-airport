@@ -4,7 +4,7 @@ const { pathToFileURL } = require('node:url');
 const { mkdirSync } = require('node:fs');
 const path = require('node:path');
 
-const gameUrl = pathToFileURL(path.resolve(__dirname, '../荒謬市長_v0.2.html')).href;
+const gameUrl = pathToFileURL(path.resolve(__dirname, '../荒謬市長_v0.3.html')).href;
 const screenDir = path.resolve(__dirname, '../artifacts/screenshots');
 const sizes = [
   { name: 'desktop-1440', width: 1440, height: 900 },
@@ -81,6 +81,8 @@ for (const size of sizes) {
         await expect(page.locator('[data-v2="tile"]')).toHaveCount(9);
         await press(page, page.locator('[data-v2="tile"][data-index="0"]'), touch);
         await expect(page.locator('[data-v2="build"]')).toHaveCount(6);
+        await expect(page.locator('.action-tabs .action-tab')).toHaveCount(3);
+        await expect(page.locator('#action .forecast')).toHaveCount(6);
         await verifyNoHorizontalOverflow(page);
 
         const dir = path.join(screenDir, info.project.name);
@@ -108,12 +110,16 @@ test.describe('full interactive playthrough and persistence', () => {
       await expect(page.locator('#action [data-v2="policy"]')).toHaveCount(3);
       await page.locator('#action [data-v2="policy"]').first().click();
       await page.locator('#map [data-v2="tile"][data-index="8"]').click();
-      await page.locator('[data-v2="defer"]').click();
+      await page.locator('[data-v2="action-tab"][data-tab="defer"]').click();
+    await page.locator('[data-v2="defer"]').click();
       await page.locator('[data-v2="settle"]').click();
       if (turn < 12) await expect(page.locator('.round b')).toHaveText(String(turn + 1).padStart(2, '0'));
     }
     await expect(page.locator('#endtitle')).toBeVisible();
     await expect(page.locator('#modal .result')).toBeVisible();
+    await expect(page.locator('#modal .audit-row')).toHaveCount(3);
+    await expect(page.locator('#modal .audit')).toBeVisible();
+    await expect(page.locator('#modal [data-v2="restart"]')).toBeFocused();
     mkdirSync(path.join(screenDir, 'chromium'), { recursive: true });
     const picture = path.join(screenDir, 'chromium', 'final-result.png');
     await page.screenshot({ path: picture, fullPage: true });
@@ -136,29 +142,38 @@ test.describe('full interactive playthrough and persistence', () => {
     await expect(page.locator('html')).toHaveAttribute('lang', 'nl');
     await expect(page.locator('.lang select')).toHaveValue('nl');
     await expect(page.locator('[data-v2="build"]')).toHaveCount(6);
+        await expect(page.locator('.action-tabs .action-tab')).toHaveCount(3);
+        await expect(page.locator('#action .forecast')).toHaveCount(6);
     await expect(page.locator('#map [data-index="3"]')).toHaveAttribute('aria-pressed', 'true');
+    await page.locator('[data-v2="action-tab"][data-tab="defer"]').click();
     await page.locator('[data-v2="defer"]').click();
     await page.locator('[data-v2="settle"]').click();
     await expect(page.locator('.round b')).toHaveText('02');
   });
 
-  test('record initial keyboard focus as an accessibility diagnostic', async ({ page }, info) => {
-    test.skip(info.project.name !== 'chromium', 'Diagnostic, not an accessibility certification.');
+  test('keyboard focus enters, remains within and exits the intro dialog', async ({ page }, info) => {
     await page.goto(gameUrl);
     await expect(page.locator('#introtitle')).toBeVisible();
+    const first=page.locator('#modal [data-v2="close"]');
+    await expect(first).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(first).toBeFocused();
+    await page.keyboard.press('Shift+Tab');
+    await expect(first).toBeFocused();
     const focus = await page.evaluate(() => ({
       activeTag: document.activeElement?.tagName || 'none',
-      activeText: document.activeElement?.textContent?.slice(0, 70) || '',
-      modalHasAutofocus: !!document.querySelector('#modal [autofocus]'),
-      modalLabel: !!document.querySelector('#modal [role="dialog"][aria-modal="true"]')
+      modalLabel: !!document.querySelector('#modal [role="dialog"][aria-modal="true"]'),
+      focusInsideDialog: !!document.querySelector('#modal [role="dialog"]')?.contains(document.activeElement)
     }));
-    mkdirSync(path.join(screenDir, 'chromium'), { recursive: true });
-    require('node:fs').writeFileSync(
-      path.join(screenDir, 'chromium', 'a11y-initial-focus.json'),
-      JSON.stringify(focus, null, 2) + '\n'
-    );
+    const dir=path.join(screenDir,info.project.name);
+    mkdirSync(dir,{recursive:true});
+    require('node:fs').writeFileSync(path.join(dir,'a11y-initial-focus.json'),JSON.stringify(focus,null,2)+'\n');
     expect(focus.modalLabel).toBe(true);
-    // Initial focus and focus trapping are separately tracked in Issue #5.
+    expect(focus.activeTag).toBe('BUTTON');
+    expect(focus.focusInsideDialog).toBe(true);
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#modal .overlay')).toHaveCount(0);
+    await expect(page.locator('[data-v2="policy"]').first()).toBeFocused();
   });
   test('built plot remains intact, may upgrade once, and administration may be used once', async ({ page }, info) => {
     test.skip(info.project.name !== 'chromium', 'Behavioral controls are validated in Chromium.');
@@ -166,6 +181,8 @@ test.describe('full interactive playthrough and persistence', () => {
     await page.locator('[data-v2="policy"]').first().click();
     await page.locator('[data-v2="tile"][data-index="0"]').click();
     await expect(page.locator('[data-v2="build"]')).toHaveCount(6);
+        await expect(page.locator('.action-tabs .action-tab')).toHaveCount(3);
+        await expect(page.locator('#action .forecast')).toHaveCount(6);
     await page.locator('[data-v2="build"][data-type="lab"]').click();
     await page.locator('[data-v2="settle"]').click();
     await page.locator('[data-v2="policy"]').first().click();
@@ -177,10 +194,13 @@ test.describe('full interactive playthrough and persistence', () => {
     await page.locator('[data-v2="policy"]').first().click();
     await page.locator('[data-v2="tile"][data-index="0"]').click();
     await expect(page.locator('[data-v2="upgrade"]')).toHaveCount(0);
+    await page.locator('[data-v2="action-tab"][data-tab="admin"]').click();
     await page.locator('[data-v2="admin"][data-type="research"]').click();
     await page.locator('[data-v2="settle"]').click();
     await page.locator('[data-v2="policy"]').first().click();
+    await page.locator('[data-v2="action-tab"][data-tab="admin"]').click();
     await expect(page.locator('[data-v2="admin"][data-type="research"]')).toBeDisabled();
+    await page.locator('[data-v2="action-tab"][data-tab="defer"]').click();
     await page.locator('[data-v2="defer"]').click();
     await page.locator('[data-v2="settle"]').click();
     await expect(page.locator('.round b')).toHaveText('05');
