@@ -32,13 +32,13 @@
 
 **P2 — Follow-up:** Construction cards still contain long detail lines; a single visual cost/benefit row is working, but details could be a disclosure panel as a later improvement. The map's emoji building icons should eventually be replaced by coherent local SVG art without external asset dependencies.
 
-## Required release gate
+## Final release gate — PASSED
 
-1. The **latest** PR #14 head, including the AI-goal correction and its new test, must show green Node rule/visual contracts AND Chromium/Firefox/WebKit Playwright checks.
-2. The limited localized AI note should render with no text overflow in latest screenshots.
-3. Keep PR #14 draft and `main` unchanged until the gate is passed.
-4. Real-device touch is excluded by the owner. Full 148-frame independent human sign-off and professional native-language proofreading were not performed and must not be claimed.
+1. [Final Chromium/Firefox/WebKit Playwright run #41906249756](https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/actions/runs/41906249756) on commit `442b6a1247286ff54a09d84f0fa887faa8fbe6af`: **successful**. Tested all four languages at 390/1024/1440px and policy/build/administration/defer/settlement/ending interactions.
+2. [Node visual and rules contracts #41906249730](https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/actions/runs/41906249730): **successful**; [legacy regression #41906249726](https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/actions/runs/41906249726): **successful**.
+3. Fresh artifact [#13361225627](https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/actions/runs/41906249756) contains the corrected screenshots. A second representative manual review of the latest zh/en/fr/nl 390px AI meter verified the localized 50-point target renders legibly, without overlap.
+4. Full native-language proofreading and screen-reader auditing remain outside this representative screenshot acceptance. Physical-device touch is explicitly waived, not passed.
 
-## Verdict
+## Final verdict
 
-**Representative visual design: conditional pass** (no blocking clipping found, a score-bar semantics defect fixed in source). Final release approval is **pending fresh CI on corrected commit** and a quick updated screenshot check. Gameplay mechanics were not altered.
+**PASS for the defined v0.4 representative visual acceptance and full automated browser coverage.** The visually incorrect AI pledge meter was corrected and re-reviewed; no release-blocking visual defects remain in the inspected scenes. The outstanding non-blocking long-scroll UX work is tracked in [Issue #15](https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/issues/15). This sign-off covers the test scope above, not a 148-image-by-image certification or a native-speaker/screen-reader audit.
