@@ -281,7 +281,7 @@ document.addEventListener('keydown',e=>{
   document.querySelector('[data-v2="policy"]')?.focus();return;
  }
  if(e.key!=='Tab')return;
- const buttons=[...dialog.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])')];
+ const buttons=[...dialog.querySelectorAll('button:not([disabled]),summary,a[href],input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])')];
  if(!buttons.length){e.preventDefault();dialog.setAttribute('tabindex','-1');dialog.focus();return}
  const first=buttons[0],last=buttons[buttons.length-1],active=document.activeElement;
  if(!dialog.contains(active)||!buttons.includes(active)||e.shiftKey&&active===first){
