@@ -37,6 +37,20 @@ async function verifyNoHorizontalOverflow(page) {
     viewportWidth: window.innerWidth,
     bodyWidth: document.body.scrollWidth
   }));
+  if (result.bodyWidth > result.viewportWidth + 1) {
+    const offenders = await page.evaluate(() => [...document.querySelectorAll('body *')]
+      .filter(el => {
+        const r = el.getBoundingClientRect();
+        return r.width > 0 && (r.right > innerWidth + 1 || r.left < -1);
+      })
+      .map(el => ({
+        tag: el.tagName, className: String(el.className || '').slice(0, 100),
+        text: (el.innerText || '').slice(0, 70),
+        width: Math.round(el.getBoundingClientRect().width),
+        right: Math.round(el.getBoundingClientRect().right)
+      })).slice(0, 14));
+    console.log('OVERFLOW_DIAGNOSTIC', JSON.stringify({ viewport: result.viewportWidth, offenders }));
+  }
   expect.soft(result.scrollWidth, JSON.stringify(result)).toBeLessThanOrEqual(result.viewportWidth + 1);
   expect.soft(result.bodyWidth, JSON.stringify(result)).toBeLessThanOrEqual(result.viewportWidth + 1);
 }
