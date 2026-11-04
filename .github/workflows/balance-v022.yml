@@ -1,0 +1,26 @@
+name: v0.2.2 balance audit
+on:
+  push:
+    branches: [analysis/v022-balance-audit]
+  pull_request:
+    paths: ['scripts/balance-v022.cjs', '.github/workflows/balance-v022.yml', '荒謬市長_v0.2.html']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Replay 800 seeded games
+        run: node scripts/balance-v022.cjs
+      - name: Preserve benchmark and methodology report
+        uses: actions/upload-artifact@v4
+        with:
+          name: v022-balance-baseline
+          path: artifacts/balance/
+          retention-days: 30
