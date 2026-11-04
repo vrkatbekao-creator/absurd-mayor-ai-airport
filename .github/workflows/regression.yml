@@ -1,0 +1,25 @@
+name: v0.2 regression tests
+
+on:
+  push:
+    branches:
+      - main
+      - test/v02-regression-ci
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  game-regression:
+    name: Offline gameplay logic (Node 22)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run dependency-free regression tests
+        run: node --test tests/regression.test.cjs
