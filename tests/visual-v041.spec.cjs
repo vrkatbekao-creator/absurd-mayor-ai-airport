@@ -24,6 +24,7 @@ async function press(page, locator, touch) {
 }
 
 async function start(page, language = 'zh', touch = false) {
+  await page.addInitScript(() => { let seed=41; Math.random=()=>((seed=(seed*16807)%2147483647)-1)/2147483646; });
   await page.goto(gameUrl, { waitUntil: 'load' });
   await expect(page.locator('#modal [data-v2="close"]')).toBeVisible();
   await page.locator('.lang select').selectOption(language);
@@ -78,10 +79,20 @@ for (const size of sizes) {
         await verifyNoHorizontalOverflow(page);
         await expect(page.locator('#v041-brief > div')).toHaveCount(6);
         await expect(page.locator('#v041-metrics')).not.toHaveAttribute('open', '');
+        const dir = path.join(screenDir, info.project.name);
+        mkdirSync(dir, { recursive: true });
+        const capture=async(prefix,fullPage=true)=>page.screenshot({path:path.join(dir,prefix+'-'+size.name+'-'+language.code+'.png'),fullPage});
+        await capture('default');
         await page.locator('#v041-jump').click();
         await expect(page.locator('#action')).toBeFocused();
+        await capture('jump',false);
+        const distance=await page.locator('#action').evaluate(el=>Math.round(el.getBoundingClientRect().top));
+        expect(Math.abs(distance)).toBeLessThanOrEqual(2);
         await page.locator('#v041-summary').click();
         await expect(page.locator('#stats .v04-metric')).toHaveCount(6);
+        await capture('indicators-open');
+        await page.locator('#v041-summary').click();
+        await expect(page.locator('#stats')).toBeHidden();
 
         await press(page, page.locator('[data-v2="policy"]').first(), touch);
         await expect(page.locator('[data-v2="tile"]')).toHaveCount(9);
@@ -93,13 +104,22 @@ for (const size of sizes) {
         await expect(page.locator('#action .v041-card details').first()).not.toHaveAttribute('open', '');
         await verifyNoHorizontalOverflow(page);
 
-        const dir = path.join(screenDir, info.project.name);
-        mkdirSync(dir, { recursive: true });
         const picture = path.join(dir, size.name + '-' + language.code + '.png');
         await page.screenshot({ path: picture, fullPage: true });
         await info.attach('gameplay-screenshot', {
           path: picture, contentType: 'image/png'
         });
+        const disclosure=page.locator('.v041-card summary').first();
+        const decisionName=await page.locator('[data-v2="build"]').first().innerText();
+        expect(decisionName).toMatch(/AI|IA/);
+        await expect(disclosure).toHaveAccessibleName(/.+/);
+        await disclosure.focus();await page.keyboard.press('Enter');
+        await expect(page.locator('.v041-card details').first()).toHaveAttribute('open','');
+        await expect(page.locator('.v041-card .forecast').first()).toBeVisible();
+        await expect(disclosure).toBeFocused();
+        await verifyNoHorizontalOverflow(page);await capture('building-open');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('[data-v2="build"]')).toHaveCount(6);
         // Visual QA: inspect all three civic-action groups and the settlement phase,
         // not merely the default construction list.
         const tabs=page.locator('#action .action-tab');
@@ -127,6 +147,14 @@ for (const size of sizes) {
         await expect(page.locator('#action [data-v2="settle"]')).toHaveCount(1);
         await verifyNoHorizontalOverflow(page);
         await page.screenshot({path:path.join(dir,'settlement-'+size.name+'-'+language.code+'.png'),fullPage:true});
+        await page.locator('[data-v2="settle"]').click();
+        await page.locator('[data-v2="policy"]').first().click();
+        await page.locator('[data-v2="tile"][data-index="0"]').click();
+        await expect(page.locator('[data-v2="upgrade"]')).toHaveCount(1);
+        await capture('upgrade-closed');
+        await page.locator('.v041-card summary').click();
+        await expect(page.locator('.v041-card .forecast')).toBeVisible();
+        await verifyNoHorizontalOverflow(page);await capture('upgrade-open');
         expect(pageErrors, 'uncaught browser script errors').toEqual([]);
         expect(externalRequests, 'game must remain offline/self-contained').toEqual([]);
       });
@@ -137,7 +165,6 @@ for (const size of sizes) {
 test.describe('full interactive playthrough and persistence', () => {
   test.use({ viewport: { width: 1440, height: 900 } });
   test('12 turns with real UI clicks, final report and restart', async ({ page }, info) => {
-    test.skip(info.project.name !== 'chromium', 'Full UI playthrough is exercised in Chromium; smoke cases cover all browsers.');
     const errors = [];
     page.on('pageerror', e => errors.push(String(e)));
     await start(page);
@@ -175,7 +202,6 @@ test.describe('full interactive playthrough and persistence', () => {
   });
 
   test('preserve policy, plot selection and language after reload', async ({ page }, info) => {
-    test.skip(info.project.name !== 'chromium', 'Save reload validation is run in Chromium file origin.');
     await start(page, 'en');
     await page.locator('#action [data-v2="policy"]').first().click();
     await page.locator('#map [data-v2="tile"][data-index="3"]').click();
@@ -221,7 +247,6 @@ test.describe('full interactive playthrough and persistence', () => {
     await expect(page.locator('[data-v2="policy"]').first()).toBeFocused();
   });
   test('built plot remains intact, may upgrade once, and administration may be used once', async ({ page }, info) => {
-    test.skip(info.project.name !== 'chromium', 'Behavioral controls are validated in Chromium.');
     await start(page);
     await page.locator('[data-v2="policy"]').first().click();
     await page.locator('[data-v2="tile"][data-index="0"]').click();
@@ -262,7 +287,6 @@ test.describe('full interactive playthrough and persistence', () => {
 test.describe('v0.4 visual-first contract', () => {
   test.use({ viewport: { width: 390, height: 844 } });
   test('dashboard meters, nine illustrated tiles, 12-turn timeline and policy chips', async ({page},info) => {
-    test.skip(info.project.name !== 'chromium','v0.4 contract: Chromium; regular matrix checks all engines');
     await start(page,'nl');
     await expect(page.locator('#stats .v04-metric')).toHaveCount(6);
     await expect(page.locator('#stats .v04-meter')).toHaveCount(6);
@@ -280,7 +304,6 @@ test.describe('v0.4 visual-first contract', () => {
     await verifyNoHorizontalOverflow(page);
   });
   test('result provides accessible title, outcome illustration, comparison and disclosure', async ({page},info)=>{
-    test.skip(info.project.name !== 'chromium','v0.4 narrative check in Chromium');
     await start(page,'fr');
     for(let i=0;i<12;i++){
       await page.locator('[data-v2="policy"]').first().click();
