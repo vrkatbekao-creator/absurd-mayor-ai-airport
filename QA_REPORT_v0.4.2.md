@@ -1,15 +1,16 @@
-# v0.4.2 city visuals and QA
+# v0.4.2 illustrated city and QA
 
-## Scope
-- New standalone offline file: 荒謬市長_v0.4.2.html. Earlier version files are preserved.
-- Fifteen inline SVG illustrations cover nine original airport/city plots and six development types, with a shared palette, outline and ground plane.
-- An operating runway shows an aircraft; when flights are grounded, the original runway shows a closure cross. Productive buildings show power-shortage text and dimmed windows; level-two facilities have an added upgrade marker.
-- Global flight/power status and tile accessible names retain localized text. The SVGs are decorative and cannot receive focus.
-- Decisions show numeric deltas in a polite, atomic live region. Building artwork moves briefly and changed KPI cards pulse once; reduced-motion settings disable these effects. Feedback is transient UI state and adds no save fields.
+## Final scope
+The user selected art direction A: detailed, smooth city illustrations. This replaces the minimal SVG prototype with a 16-cell illustrated atlas, embedded once as WebP inside the standalone HTML. SVG/CSS overlays provide the closure cross, upgrades and shortage treatment. See ASSET_PROVENANCE_v0.4.2.md for the source, hashes and generation prompt.
+
+- Full-scene illustrations cover all nine original plot types, six developments and a closed runway.
+- No nominal capacity text appears on plots, in their tooltip or in their accessible names. Airport-wide traffic remains in the dashboard and redevelopment forecasts.
+- Shortage and grounding use visible localized text, not color alone. Decorative scene art is excluded from accessible names.
+- Decisions announce localized numeric deltas, with turn and action context. Display-only redraws preserve the live-region DOM, avoiding repeated announcements on plot selection.
+- Brief construction and KPI effects respect prefers-reduced-motion. Transient feedback does not add save fields.
+- Earlier HTML versions are preserved; gameplay, economy, thresholds and save schema are unchanged.
 
 ## Validation
-The complete inherited 36-case language/size/browser matrix plus existing behavioral cases is retained. New tests cover all building art, combined grounded/shortage/upgraded states in each language, reduced motion, old-save loading, and exact full-state equality after a mixed 12-turn playthrough in v0.4.1/v0.4.2.
+Local Chrome on Windows: **23 passed, 0 failed** on the final A-style implementation. This includes the 12 viewport/language cases, inherited behavior cases, four exceptional-state/reduced-motion cases, and a mixed 12-turn comparison whose complete saved state is equal in v0.4.1 and v0.4.2. Old v0.4.1 saves load unchanged. Display-only interactions do not mutate saved state or repeatedly rewrite the live region. The tests assert absence of per-tile capacity text.
 
-Local Chrome: the 18 inherited cases passed; the five new cases passed after correcting a fixture interaction (the level-two fixture has no upgrade disclosure, so the test now toggles KPI details to verify display-only interactions do not mutate the save). Chinese desktop and Chinese/Dutch combined-state screenshots were manually reviewed. Tile warnings are shortened; the city status retains the full half-output explanation.
-
-The PR records the final CI head, results and representative screenshot review. Manual screenshot sampling is not a full screen-reader session or native-language copy edit. No economy, thresholds, actions or save schema changes are intended.
+Manual local review: Chinese desktop overview and French mobile overview were viewed after integrating the final artwork; names are readable and no obvious clipping was observed. The PR records the final Chromium/Firefox/WebKit CI head, outcome and further screenshot sampling. Full manual screen-reader and physical-touch sessions are outside this check; accessible names, keyboard operation and reduced motion are tested automatically.

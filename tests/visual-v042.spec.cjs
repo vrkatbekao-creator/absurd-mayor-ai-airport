@@ -331,13 +331,17 @@ test.describe('v0.4 visual-first contract', () => {
 for (const language of languages) test('city art, states and reduced motion '+language.code,async({page},info)=>{
  await page.setViewportSize({width:390,height:844});await page.emulateMedia({reducedMotion:'reduce'});
  await start(page,language.code);
- await expect(page.locator('#map svg.v042-art')).toHaveCount(9);
- await expect(page.locator('#map svg:not([aria-hidden="true"])')).toHaveCount(0);
+ await expect(page.locator('#map .v042-art')).toHaveCount(9);
+ await expect(page.locator('#map small')).toHaveCount(0);
+ await expect(page.locator('#map')).not.toContainText(/名目容量|Nominal capacity|Capacité nominale|Nominale capaciteit/);
+ await expect(page.locator('#map .v042-art:not([aria-hidden="true"])')).toHaveCount(0);
  await page.locator('[data-v2="policy"]').first().click();
  await expect(page.locator('#v042-feedback')).not.toBeEmpty();
+ await page.evaluate(()=>{window.feedbackMutations=0;new MutationObserver(records=>window.feedbackMutations+=records.length).observe(document.getElementById('v042-feedback'),{subtree:true,childList:true,characterData:true})});
  await page.locator('[data-v2="tile"][data-index="0"]').click();
+ expect(await page.evaluate(()=>window.feedbackMutations)).toBe(0);
  await page.locator('[data-v2="build"][data-type="data"]').click();
- await expect(page.locator('#map [data-index="0"] svg')).toHaveAttribute('data-art','data');
+ await expect(page.locator('#map [data-index="0"] .v042-art')).toHaveAttribute('data-art','data');
  expect(await page.locator('.v042-changed .v042-art').evaluate(e=>getComputedStyle(e).animationName)).toBe('none');
  await page.evaluate(()=>{
   const g=JSON.parse(localStorage.getItem('absurd-mayor-v02'));
@@ -345,7 +349,9 @@ for (const language of languages) test('city art, states and reduced motion '+la
   types.forEach(([type,icon,name,level],i)=>g.tiles[i]={type,icon,name,traffic:0,level});
   g.phase='build';g.selected=1;localStorage.setItem('absurd-mayor-v02',JSON.stringify(g));
  });await page.reload();
- await expect(page.locator('#map svg.v042-art')).toHaveCount(9);
+ await expect(page.locator('#map .v042-art')).toHaveCount(9);
+ await expect(page.locator('#map small')).toHaveCount(0);
+ await expect(page.locator('#map')).not.toContainText(/名目容量|Nominal capacity|Capacité nominale|Nominale capaciteit/);
  await expect(page.locator('#map [data-index="1"]')).toHaveClass(/is-blackout/);
  await expect(page.locator('#map [data-index="1"]')).toHaveAccessibleName(/2/);
  await expect(page.locator('#v042-map-state .warning')).toHaveCount(2);
