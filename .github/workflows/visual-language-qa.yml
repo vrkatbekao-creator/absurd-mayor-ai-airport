@@ -1,0 +1,21 @@
+name: v0.3 visual and language QA
+on:
+  push:
+    branches: [qa/v03-visual-language-review]
+  pull_request:
+    paths: ['荒謬市長_v0.3.html', 'tests/localization-qa.test.cjs', 'tests/browser-playtest.spec.cjs', '.github/workflows/visual-language-qa.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  localization:
+    name: Four-language coverage and content audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Execute QA regression
+        run: node --test tests/localization-qa.test.cjs
