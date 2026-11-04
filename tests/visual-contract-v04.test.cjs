@@ -28,6 +28,16 @@ test('six bars and data labels render under all four languages',()=>{
   assert.ok(!s.includes('NaN'),language+' invalid bar');
  }
 });
+test('AI meter uses the campaign target 50, with a localized threshold label',()=>{
+ const {ctx,statSpecs,newGame,metrics,v04Stats,VIS}=api();
+ assert.equal(statSpecs.find(x=>x.key==='ai').max,50);
+ for(const language of ['zh','en','fr','nl']){
+  vm.runInContext("lang='"+language+"'",ctx);
+  const stats=v04Stats(metrics(newGame()));
+  assert.ok(stats.includes(VIS[language].aiTarget),language+' pledge target missing');
+  assert.ok(!stats.includes('undefined'));
+ }
+});
 test('all 12 milestones render; current round advances in simulation',()=>{
  const {ctx,newGame,choosePolicy,deferAction,doSettle,v04Timeline}=api();
  const initial=v04Timeline();
