@@ -119,6 +119,7 @@ test.describe('full interactive playthrough and persistence', () => {
     await expect(page.locator('#modal .result')).toBeVisible();
     await expect(page.locator('#modal .audit-row')).toHaveCount(3);
     await expect(page.locator('#modal .audit')).toBeVisible();
+    await expect(page.locator('#modal [data-v2="restart"]')).toBeFocused();
     mkdirSync(path.join(screenDir, 'chromium'), { recursive: true });
     const picture = path.join(screenDir, 'chromium', 'final-result.png');
     await page.screenshot({ path: picture, fullPage: true });
@@ -150,23 +151,29 @@ test.describe('full interactive playthrough and persistence', () => {
     await expect(page.locator('.round b')).toHaveText('02');
   });
 
-  test('record initial keyboard focus as an accessibility diagnostic', async ({ page }, info) => {
-    test.skip(info.project.name !== 'chromium', 'Diagnostic, not an accessibility certification.');
+  test('keyboard focus enters, remains within and exits the intro dialog', async ({ page }, info) => {
     await page.goto(gameUrl);
     await expect(page.locator('#introtitle')).toBeVisible();
+    const first=page.locator('#modal [data-v2="close"]');
+    await expect(first).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(first).toBeFocused();
+    await page.keyboard.press('Shift+Tab');
+    await expect(first).toBeFocused();
     const focus = await page.evaluate(() => ({
       activeTag: document.activeElement?.tagName || 'none',
-      activeText: document.activeElement?.textContent?.slice(0, 70) || '',
-      modalHasAutofocus: !!document.querySelector('#modal [autofocus]'),
-      modalLabel: !!document.querySelector('#modal [role="dialog"][aria-modal="true"]')
+      modalLabel: !!document.querySelector('#modal [role="dialog"][aria-modal="true"]'),
+      focusInsideDialog: !!document.querySelector('#modal [role="dialog"]')?.contains(document.activeElement)
     }));
-    mkdirSync(path.join(screenDir, 'chromium'), { recursive: true });
-    require('node:fs').writeFileSync(
-      path.join(screenDir, 'chromium', 'a11y-initial-focus.json'),
-      JSON.stringify(focus, null, 2) + '\n'
-    );
+    const dir=path.join(screenDir,info.project.name);
+    mkdirSync(dir,{recursive:true});
+    require('node:fs').writeFileSync(path.join(dir,'a11y-initial-focus.json'),JSON.stringify(focus,null,2)+'\n');
     expect(focus.modalLabel).toBe(true);
-    // Initial focus and focus trapping are separately tracked in Issue #5.
+    expect(focus.activeTag).toBe('BUTTON');
+    expect(focus.focusInsideDialog).toBe(true);
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#modal .overlay')).toHaveCount(0);
+    await expect(page.locator('[data-v2="policy"]').first()).toBeFocused();
   });
   test('built plot remains intact, may upgrade once, and administration may be used once', async ({ page }, info) => {
     test.skip(info.project.name !== 'chromium', 'Behavioral controls are validated in Chromium.');
