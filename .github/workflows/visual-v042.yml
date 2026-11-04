@@ -24,13 +24,36 @@ jobs:
         run: npx playwright install --with-deps chromium firefox webkit
       - name: Run full offline visual-first QA
         run: npx playwright test -c tests/v042-playwright.config.cjs
-      - name: Preserve screenshots and results
+      - name: Preserve chromium screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: v042-visual-browser-qa
+          name: v042-chromium-screenshots
+          path: artifacts/v042-screenshots/chromium/
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Preserve firefox screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v042-firefox-screenshots
+          path: artifacts/v042-screenshots/firefox/
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Preserve webkit screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v042-webkit-screenshots
+          path: artifacts/v042-screenshots/webkit/
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Preserve test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v042-test-report
           path: |
-            artifacts/v042-screenshots/
             artifacts/v042-playwright-report/
             artifacts/v042-test-results/
           retention-days: 14
