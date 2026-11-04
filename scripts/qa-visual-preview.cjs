@@ -30,6 +30,14 @@ for(const item of presets){
   await page.locator('[data-v2="tile"][data-index="0"]').click();
   if(item.phase==='admin')await page.locator('[data-v2="action-tab"][data-tab="admin"]').click();
  }
+ const diag=await page.evaluate(()=>({
+   viewport:innerWidth,bodyScroll:document.body.scrollWidth,rootScroll:document.documentElement.scrollWidth,
+   innerOverflow:[...document.querySelectorAll('body *')].map(el=>({el,diff:el.scrollWidth-el.clientWidth}))
+    .filter(x=>x.diff>2&&getComputedStyle(x.el).overflowX==='visible')
+    .sort((x,y)=>y.diff-x.diff).slice(0,12)
+    .map(x=>({tag:x.el.tagName,cls:String(x.el.className).slice(0,45),diff:x.diff,text:(x.el.textContent||'').slice(0,80)}))
+ }));
+ console.log('QA_LAYOUT_DIAGNOSTIC '+item.name+' '+JSON.stringify(diag));
  const jpeg=await page.screenshot({type:'jpeg',quality:43,fullPage:item.phase!=='ending'});
  console.log('QA_IMAGE_START '+item.name);
  console.log(jpeg.toString('base64'));
