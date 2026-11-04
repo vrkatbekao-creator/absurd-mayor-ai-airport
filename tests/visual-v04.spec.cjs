@@ -143,6 +143,10 @@ test.describe('full interactive playthrough and persistence', () => {
       if (turn < 12) await expect(page.locator('.round b')).toHaveText(String(turn + 1).padStart(2, '0'));
     }
     await expect(page.locator('#endtitle')).toBeVisible();
+    // v0.4 moves the detailed numeric report into a native disclosure.
+    await expect(page.locator('#modal .v04-details')).toBeVisible();
+    await expect(page.locator('#modal .result')).toBeHidden();
+    await page.locator('#modal .v04-details summary').click();
     await expect(page.locator('#modal .result')).toBeVisible();
     await expect(page.locator('#modal .audit-row')).toHaveCount(3);
     await expect(page.locator('#modal .audit')).toBeVisible();
