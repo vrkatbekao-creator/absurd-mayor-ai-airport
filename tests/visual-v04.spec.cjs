@@ -143,6 +143,8 @@ test.describe('full interactive playthrough and persistence', () => {
       if (turn < 12) await expect(page.locator('.round b')).toHaveText(String(turn + 1).padStart(2, '0'));
     }
     await expect(page.locator('#endtitle')).toBeVisible();
+    // The initial modal focus belongs to the outcome heading, before interacting.
+    await expect(page.locator('#endtitle')).toBeFocused();
     // v0.4 moves the detailed numeric report into a native disclosure.
     await expect(page.locator('#modal .v04-details')).toBeVisible();
     await expect(page.locator('#modal .result')).toBeHidden();
@@ -150,7 +152,9 @@ test.describe('full interactive playthrough and persistence', () => {
     await expect(page.locator('#modal .result')).toBeVisible();
     await expect(page.locator('#modal .audit-row')).toHaveCount(3);
     await expect(page.locator('#modal .audit')).toBeVisible();
-    await expect(page.locator('#endtitle')).toBeFocused();
+    // After clicking the disclosure, keyboard focus should remain on its summary,
+    // not jump back to the heading.
+    await expect(page.locator('#modal .v04-details summary')).toBeFocused();
     mkdirSync(path.join(screenDir, 'chromium'), { recursive: true });
     const picture = path.join(screenDir, 'chromium', 'final-result.png');
     await page.screenshot({ path: picture, fullPage: true });
