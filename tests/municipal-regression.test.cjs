@@ -6,7 +6,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const path=require('node:path');
-const html=fs.readFileSync(path.join(__dirname,'..','荒謬市長_v0.2.html'),'utf8');
+const html=fs.readFileSync(path.join(__dirname,'..','荒謬市長_v0.3.html'),'utf8');
 const scripts=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)].map(x=>x[1]);
 assert.equal(scripts.length,2);
 const legacyCut=scripts[0].indexOf("document.addEventListener('click',");
