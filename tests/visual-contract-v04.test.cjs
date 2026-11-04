@@ -90,3 +90,11 @@ test('visual HTML remains offline and feature scripts are syntactically valid',(
  assert.ok(!/<link[^>]*href\s*=\s*["']https?:/i.test(html));
  for(const block of blocks)assert.doesNotThrow(()=>new Function(block));
 });
+
+test('v0.4 presentation does not mutate v0.3 financial, policy or ending model',()=>{
+ const stable=fs.readFileSync(path.resolve(__dirname,'../荒謬市長_v0.3.html'),'utf8');
+ const original=stable.slice(stable.indexOf('function metrics(g=game)'),stable.indexOf('function drawV2(){')).trim();
+ const v04=html.slice(html.indexOf('function metrics(g=game)'),html.indexOf('/* v0.4 presentation helpers')).trim();
+ assert.ok(original.length>12000);
+ assert.equal(v04,original,'core economics, promises and civic actions must be identical to stable v0.3');
+});
