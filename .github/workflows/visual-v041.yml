@@ -1,0 +1,39 @@
+name: v0.4.1 browser regression
+on:
+  push:
+    branches: [codex/v0.4.1-ux]
+  pull_request:
+    paths:
+      - '荒謬市長_v0.4.1.html'
+      - 'tests/visual-v041.spec.cjs'
+      - 'tests/v041-playwright.config.cjs'
+      - '.github/workflows/visual-v041.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  visual:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright runner
+        run: npm install --no-save --package-lock=false @playwright/test@1.56.1
+      - name: Install real browser engines
+        run: npx playwright install --with-deps chromium firefox webkit
+      - name: Run full offline visual-first QA
+        run: npx playwright test -c tests/v041-playwright.config.cjs
+      - name: Preserve screenshots and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v041-visual-browser-qa
+          path: |
+            artifacts/v041-screenshots/
+            artifacts/v041-playwright-report/
+            artifacts/v041-test-results/
+          retention-days: 14
+          if-no-files-found: warn
