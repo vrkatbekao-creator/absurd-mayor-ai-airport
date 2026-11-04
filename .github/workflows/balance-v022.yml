@@ -1,7 +1,7 @@
 name: v0.2.2 balance audit
 on:
   push:
-    branches: [analysis/v022-balance-audit]
+    branches: [analysis/v022-balance-audit, analysis/v022-sensitivity]
   pull_request:
     paths: ['scripts/balance-v022.cjs', '.github/workflows/balance-v022.yml', '荒謬市長_v0.2.html']
   workflow_dispatch:

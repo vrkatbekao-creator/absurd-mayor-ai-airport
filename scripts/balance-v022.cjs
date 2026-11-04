@@ -1,5 +1,5 @@
 'use strict';
-// Reproducible 800-run comparison using shipped v0.2.1 embedded engine.
+// Reproducible 1100-run comparison using shipped v0.2.1 embedded engine.
 const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
 const html=fs.readFileSync(path.resolve(__dirname,'../荒謬市長_v0.2.html'),'utf8');
 const scripts=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)].map(x=>x[1]);
@@ -25,6 +25,22 @@ upgrade:[['build',3,'data'],['upgrade',3],['build',4,'lab'],['upgrade',4],['buil
 administration:[['admin','consult'],['admin','research'],['admin','investment'],['admin','audit']],
 propaganda:[['build',6,'show'],['upgrade',6],['build',7,'show'],['upgrade',7],['build',8,'show'],['upgrade',8],['admin','investment'],['admin','audit'],['admin','consult'],['admin','research']],
 green:[['build',6,'park'],['build',7,'park'],['build',8,'park'],['upgrade',6],['upgrade',7],['upgrade',8],['admin','consult'],['admin','audit'],['admin','research'],['admin','investment']],
+powerAwareAggressive:[
+  ['build',6,'power'],['build',7,'power'],
+  ['build',1,'data'],['build',2,'lab'],['build',3,'data'],['build',4,'lab'],
+  ['upgrade',1],['upgrade',2],['upgrade',3],['upgrade',4],
+  ['admin','research'],['admin','audit']
+],
+lateRunway:[
+  ['build',3,'lab'],['build',4,'data'],['upgrade',3],['upgrade',4],
+  ['build',6,'power'],['build',7,'power'],
+  ['build',1,'data'],['build',2,'lab'],['upgrade',1],['upgrade',2],
+  ['admin','investment'],['admin','research']
+],
+minimalAI:[
+  ['build',3,'lab'],['build',4,'lab'],['upgrade',3],['upgrade',4],
+  ['admin','research'],['admin','consult'],['admin','audit']
+],
 random:[]
 };
 function act(g,mode,turn,r){
@@ -64,7 +80,7 @@ for(const name of Object.keys(plans)){
 }
 const dir=path.resolve(__dirname,'../artifacts/balance');fs.mkdirSync(dir,{recursive:true});
 fs.writeFileSync(path.join(dir,'v022_baseline.json'),JSON.stringify({seed:20261104,samplesPerStrategy:samples,summary},null,2)+'\n');
-let report='# v0.2.2 balance baseline\n\n800 deterministic complete games (8 strategies × 100). Same seeded 12/15 event decks across strategies. Shared deterministic policy heuristic (propaganda mode weights hype). These are scripted comparisons, not human play or an optimization proof.\n\n';
+let report='# v0.2.2 balance baseline\n\n1100 deterministic complete games (11 strategies × 100). Same seeded 12/15 event decks across strategies. Shared deterministic policy heuristic (propaganda mode weights hype). These are scripted comparisons, not human play or an optimization proof.\n\n';
 report+='| Strategy | Treasury | Support | AI | AI value | Airport loss | Traffic | Distress/100 | Heater | Miracle | Pigeon | PPT | Airport |\n|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n';
 for(const [name,v] of Object.entries(summary))report+=[name,v.money,v.support,v.AI,v.AIValue,v.airportLoss,v.traffic,v.distress,...endings.map(k=>v.endings[k])].join(' | ').replace(/^/,'| ').concat(' |\n');
 report+='\nAll quantities are fictional game units. Future balancing must replay identical seeds and compare the whole distribution, not only the AI miracle rate.\n';
