@@ -84,9 +84,9 @@ test('single level upgrade is effective, preserves type, and is not free',()=>{
 test('power upgrade raises supply, market upgrade raises business income',()=>{
   const g=enterAction(newGame());
   develop(g,6,'power');
-  assert.equal(metrics(g).supply,10);
+  assert.equal(metrics(g).supply,13); // untouched old substation still supplies +3
   enterAction(g);upgrade(g,6);
-  assert.equal(metrics(g).supply,13);
+  assert.equal(metrics(g).supply,16);
   enterAction(g);develop(g,7,'market');
   assert.equal(metrics(g).biz,3);
   enterAction(g);upgrade(g,7);
