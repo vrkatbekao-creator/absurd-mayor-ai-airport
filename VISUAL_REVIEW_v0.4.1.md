@@ -52,3 +52,11 @@ Capture the default collapsed KPI state separately from the expanded state. Also
 ## Follow-up
 
 Resolve the findings, rerun affected checks and review new captures before marking the visual acceptance complete. Complete keyboard and screen-reader validation separately. No merge was performed during this screenshot review.
+
+## Correction follow-up
+
+All construction effect badges now have visible zh/en/fr/nl labels. AI production is explicitly per turn; power consumption and supply are distinguished. Effect icons are decorative for assistive technology. Disclosure controls use short visible text with a programmatic association to the card title. Upgrade level and cost are labeled. Disclosure targets are at least 44 px tall and expanded explanatory text uses 13 px with 1.5 line spacing.
+
+The browser matrix now captures default collapsed KPIs, expanded indicators, the viewport after jumping, construction details open, and upgrade details closed/open. Keyboard Enter opens the native disclosure while preserving focus and without choosing a building. The previous Chromium-only behavioral tests now run in all three engines. A fixed random seed in the test setup makes the captured scenarios repeatable; game randomness is unchanged.
+
+Local Chrome checks of all four languages at 390 px passed: building/upgrade disclosures operate and no body horizontal overflow was found. Chinese collapsed and French expanded construction screenshots were manually reviewed. Final CI status and review of its new captures are recorded in PR #16; this follow-up alone is not release approval.
