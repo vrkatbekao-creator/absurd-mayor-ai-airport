@@ -187,16 +187,16 @@ function promiseAudit(){
 
 /* v0.4 presentation helpers; no mutation of the economy/state. */
 const VIS={
- zh:{money:'財政',traffic:'航班',pop:'民意',ai:'AI 實績',hype:'宣傳',power:'電力',bars:['安全','警戒','危機'],timeline:'12 回合任期',details:'詳細規則與效果',upcoming:'未來影響',completed:'已完成',now:'當前',key:'數值僅為遊戲單位',opening:'選擇政策，觀察代價',reduced:'機場停飛',short:'電力不足',noAction:'本回合不建設'},
- en:{money:'Treasury',traffic:'Flights',pop:'Support',ai:'AI score',hype:'Publicity',power:'Power',bars:['Stable','Caution','Risk'],timeline:'12-turn term',details:'Full effects and rules',upcoming:'Delayed effect',completed:'Done',now:'Now',key:'Fictional game units',opening:'Choose a policy, weigh the cost',reduced:'Flights grounded',short:'Power shortage',noAction:'No construction this turn'},
- fr:{money:'Budget',traffic:'Vols',pop:'Soutien',ai:'Résultats IA',hype:'Publicité',power:'Électricité',bars:['Stable','Attention','Risque'],timeline:'Mandat de 12 tours',details:'Effets et règles complets',upcoming:'Effet différé',completed:'Terminé',now:'Tour actuel',key:'Unités fictives du jeu',opening:'Choisir une politique et mesurer son coût',reduced:'Vols suspendus',short:'Manque de courant',noAction:'Pas de chantier ce tour'},
- nl:{money:'Begroting',traffic:'Vluchten',pop:'Steun',ai:'AI-score',hype:'Publiciteit',power:'Stroom',bars:['Stabiel','Let op','Risico'],timeline:'12 rondes',details:'Alle effecten en regels',upcoming:'Vertraagd gevolg',completed:'Voltooid',now:'Huidig',key:'Fictieve speleenheden',opening:'Kies beleid en bekijk de gevolgen',reduced:'Geen vluchten',short:'Stroomtekort',noAction:'Deze ronde niet bouwen'}
+ zh:{money:'財政',traffic:'航班',pop:'民意',ai:'AI 實績',aiTarget:'政見目標：50',hype:'宣傳',power:'電力',bars:['安全','警戒','危機'],timeline:'12 回合任期',details:'詳細規則與效果',upcoming:'未來影響',completed:'已完成',now:'當前',key:'數值僅為遊戲單位',opening:'選擇政策，觀察代價',reduced:'機場停飛',short:'電力不足',noAction:'本回合不建設'},
+ en:{money:'Treasury',traffic:'Flights',pop:'Support',ai:'AI score',aiTarget:'Pledge target: 50',hype:'Publicity',power:'Power',bars:['Stable','Caution','Risk'],timeline:'12-turn term',details:'Full effects and rules',upcoming:'Delayed effect',completed:'Done',now:'Now',key:'Fictional game units',opening:'Choose a policy, weigh the cost',reduced:'Flights grounded',short:'Power shortage',noAction:'No construction this turn'},
+ fr:{money:'Budget',traffic:'Vols',pop:'Soutien',ai:'Résultats IA',aiTarget:'Objectif promis : 50',hype:'Publicité',power:'Électricité',bars:['Stable','Attention','Risque'],timeline:'Mandat de 12 tours',details:'Effets et règles complets',upcoming:'Effet différé',completed:'Terminé',now:'Tour actuel',key:'Unités fictives du jeu',opening:'Choisir une politique et mesurer son coût',reduced:'Vols suspendus',short:'Manque de courant',noAction:'Pas de chantier ce tour'},
+ nl:{money:'Begroting',traffic:'Vluchten',pop:'Steun',ai:'AI-score',aiTarget:'Beloofd doel: 50',hype:'Publiciteit',power:'Stroom',bars:['Stabiel','Let op','Risico'],timeline:'12 rondes',details:'Alle effecten en regels',upcoming:'Vertraagd gevolg',completed:'Voltooid',now:'Huidig',key:'Fictieve speleenheden',opening:'Kies beleid en bekijk de gevolgen',reduced:'Geen vluchten',short:'Stroomtekort',noAction:'Deze ronde niet bouwen'}
 };
 const statSpecs=[
  {key:'money',icon:'💰',max:120,val:()=>game.money},
  {key:'traffic',icon:'✈️',max:80,val:m=>m.traffic},
  {key:'pop',icon:'🤝',max:100,val:()=>game.pop},
- {key:'ai',icon:'🧠',max:100,val:()=>game.ai},
+ {key:'ai',icon:'🧠',max:50,val:()=>game.ai},
  {key:'hype',icon:'📣',max:90,val:()=>game.hype},
  {key:'power',icon:'⚡',max:12,val:m=>m.supply-m.demand}
 ];
@@ -208,7 +208,7 @@ function v04Stats(m){
   const label=VIS[lang][s.key]||msg(s.key);
   const number=s.key==='traffic'?v+'/80':v;
   const note=s.key==='traffic'?(m.traffic===0?VIS[lang].reduced:Math.round(v/80*100)+'%'):
-    s.key==='power'?m.supply+' / '+m.demand:s.key==='ai'?'50 '+(lang==='zh'?'政見門檻':'/ pledge'):VIS[lang].bars[danger?2:caution?1:0];
+    s.key==='power'?m.supply+' / '+m.demand:s.key==='ai'?VIS[lang].aiTarget:VIS[lang].bars[danger?2:caution?1:0];
   return '<div class="stat v04-metric" data-key="'+s.key+'" role="group" aria-label="'+esc(label+': '+number)+'">'+
    '<div class="v04-metric-head"><small>'+esc(label)+'</small><span class="v04-icon" aria-hidden="true">'+s.icon+'</span></div>'+
    '<strong>'+number+'</strong><div class="v04-meter" aria-hidden="true"><div class="v04-fill '+(danger?'danger':caution?'warn':'')+'" style="width:'+pct+'%"></div></div>'+
