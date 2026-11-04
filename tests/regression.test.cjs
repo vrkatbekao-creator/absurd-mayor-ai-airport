@@ -33,14 +33,14 @@ function loadGame() {
   vm.runInContext(scripts[1].slice(0, v2Cut), context, { timeout: 3000, filename: 'game-v02-model.js' });
 
   const api = vm.runInContext(
-    '({ newGame, valid, metrics, promises, endingKey, choosePolicy, develop, doSettle, M, cards, builds, dictionaries })',
+    '({ newGame, valid, metrics, promises, endingKey, choosePolicy, develop, deferAction, upgrade, administration, doSettle, M, cards, builds, dictionaries })',
     context
   );
   return { ...api, context, localStorage };
 }
 
 const api = loadGame();
-const { newGame, valid, metrics, promises, endingKey, choosePolicy, develop, doSettle } = api;
+const { newGame, valid, metrics, promises, endingKey, choosePolicy, develop, deferAction, doSettle } = api;
 
 test('game stays self-contained and has twelve turns, 15 cards, and six buildings', () => {
   assert.ok(html.includes('<!DOCTYPE html>'));
@@ -75,7 +75,7 @@ test('airport begins productive and runway/tower demolition stops all flights', 
   assert.equal(metrics(terminal).airport, 6);
 });
 
-test('policy, building, settlement sequence completes all 12 turns', () => {
+test('policy, municipal action, settlement sequence completes all 12 turns', () => {
   const g = newGame();
   g.order = Array.from({ length: 15 }, (_, i) => i);
   for (let turn = 1; turn <= 12; turn++) {
@@ -83,7 +83,7 @@ test('policy, building, settlement sequence completes all 12 turns', () => {
     assert.equal(g.phase, 'policy');
     choosePolicy(g, 1);
     assert.equal(g.phase, 'build');
-    develop(g, 8, 'maintain');
+    deferAction(g);
     assert.equal(g.phase, 'settle');
     doSettle(g);
   }
@@ -201,13 +201,20 @@ test('UI vocabulary and all policy titles, bodies and choices cover four languag
 test('seeded random strategies never win AI miracle with fewer than two productive plots redeveloped', () => {
   let seed = 20261104;
   function rng() { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; }
-  const types = ['maintain', 'lab', 'data', 'show', 'power', 'park', 'market'];
+  const types = ['lab', 'data', 'show', 'power', 'park', 'market'];
   for (let run = 0; run < 120; run++) {
     const g = newGame();
     g.order = Array.from({ length: 15 }, (_, i) => i);
     for (let turn = 0; turn < 12; turn++) {
       choosePolicy(g, Math.floor(rng() * 3));
-      develop(g, Math.floor(rng() * 9), types[Math.floor(rng() * types.length)]);
+      const eligible = g.tiles.map((t, i) => t.type === 'original' ? i : -1).filter(i => i >= 0);
+      if (eligible.length && rng() < .65) {
+        const plot = eligible[Math.floor(rng() * eligible.length)];
+        develop(g, plot, types[Math.floor(rng() * types.length)]);
+      } else {
+        deferAction(g);
+      }
+      assert.equal(g.phase, 'settle');
       doSettle(g);
     }
     assert.equal(g.finished, true);
