@@ -31,8 +31,8 @@ test('M, municipal UI, and v0.3 messaging cover each language',()=>{
 });
 test('four-language instructions describe civic actions, not mandatory rebuilding',()=>{
   for(const lang of langs)assert.doesNotMatch(api.M.phaseIntro[lang],/maintain one plot|onderhouden|ou entretien|維護一地塊/i);
-  assert.match(api.M.phaseIntro.en,/city-management|land-development/i);
-  assert.match(api.M.phaseIntro.nl,/gebiedsontwikkeling/i);
+  assert.match(api.M.phaseIntro.en,/Twelve turns/i);
+  assert.match(api.M.phaseIntro.nl,/Twaalf rondes/i);
 });
 test('all land/building/event/end names are translated in fr/nl/en',()=>{
   const values=[...api.initialTiles.map(x=>x[1]),...Object.values(api.builds).map(x=>x.name),
