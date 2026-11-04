@@ -4,7 +4,7 @@ const { pathToFileURL } = require('node:url');
 const { mkdirSync } = require('node:fs');
 const path = require('node:path');
 
-const gameUrl = pathToFileURL(path.resolve(__dirname, '../荒謬市長_v0.2.html')).href;
+const gameUrl = pathToFileURL(path.resolve(__dirname, '../荒謬市長_v0.3.html')).href;
 const screenDir = path.resolve(__dirname, '../artifacts/screenshots');
 const sizes = [
   { name: 'desktop-1440', width: 1440, height: 900 },
