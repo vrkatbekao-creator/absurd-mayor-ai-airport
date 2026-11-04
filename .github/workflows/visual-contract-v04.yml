@@ -1,0 +1,23 @@
+name: v0.4 engine and visual contracts
+on:
+  push:
+    branches: [feature/v04-visual-first]
+  pull_request:
+    paths:
+      - '荒謬市長_v0.4.html'
+      - 'tests/*-v04.test.cjs'
+      - '.github/workflows/visual-contract-v04.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test source engine and visual contracts
+        run: node --test tests/municipal-v04.test.cjs tests/localization-v04.test.cjs tests/visual-contract-v04.test.cjs
