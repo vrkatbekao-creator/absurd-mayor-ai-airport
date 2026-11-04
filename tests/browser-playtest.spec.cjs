@@ -92,6 +92,33 @@ for (const size of sizes) {
         await info.attach('gameplay-screenshot', {
           path: picture, contentType: 'image/png'
         });
+        // Visual QA: inspect all three civic-action groups and the settlement phase,
+        // not merely the default construction list.
+        const tabs=page.locator('#action .action-tab');
+        await expect(tabs).toHaveCount(3);
+        const tabSize=await tabs.evaluateAll(els=>els.map(el=>{
+          const r=el.getBoundingClientRect();
+          return {width:r.width,height:r.height,scrollWidth:el.scrollWidth,clientWidth:el.clientWidth};
+        }));
+        for(const tab of tabSize){
+          expect(tab.height,'tab touch target height').toBeGreaterThanOrEqual(44);
+          expect(tab.width,'tab should not be clipped').toBeGreaterThanOrEqual(60);
+          expect(tab.scrollWidth,'tab label must fit or wrap').toBeLessThanOrEqual(tab.clientWidth+1);
+        }
+        await press(page,page.locator('[data-v2="action-tab"][data-tab="admin"]'),touch);
+        await expect(page.locator('#action [data-v2="admin"]')).toHaveCount(4);
+        await expect(page.locator('#action [data-v2="build"]')).toHaveCount(0);
+        await verifyNoHorizontalOverflow(page);
+        await page.screenshot({path:path.join(dir,'admin-'+size.name+'-'+language.code+'.png'),fullPage:true});
+        await press(page,page.locator('[data-v2="action-tab"][data-tab="defer"]'),touch);
+        await expect(page.locator('#action [data-v2="defer"]')).toHaveCount(1);
+        await verifyNoHorizontalOverflow(page);
+        await page.screenshot({path:path.join(dir,'defer-'+size.name+'-'+language.code+'.png'),fullPage:true});
+        await press(page,page.locator('[data-v2="action-tab"][data-tab="land"]'),touch);
+        await press(page,page.locator('#action [data-v2="build"][data-type="lab"]'),touch);
+        await expect(page.locator('#action [data-v2="settle"]')).toHaveCount(1);
+        await verifyNoHorizontalOverflow(page);
+        await page.screenshot({path:path.join(dir,'settlement-'+size.name+'-'+language.code+'.png'),fullPage:true});
         expect(pageErrors, 'uncaught browser script errors').toEqual([]);
         expect(externalRequests, 'game must remain offline/self-contained').toEqual([]);
       });
