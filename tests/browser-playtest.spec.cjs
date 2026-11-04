@@ -146,7 +146,7 @@ test.describe('full interactive playthrough and persistence', () => {
     await expect(page.locator('#modal .result')).toBeVisible();
     await expect(page.locator('#modal .audit-row')).toHaveCount(3);
     await expect(page.locator('#modal .audit')).toBeVisible();
-    await expect(page.locator('#modal [data-v2="restart"]')).toBeFocused();
+    await expect(page.locator('#endtitle')).toBeFocused();
     mkdirSync(path.join(screenDir, 'chromium'), { recursive: true });
     const picture = path.join(screenDir, 'chromium', 'final-result.png');
     await page.screenshot({ path: picture, fullPage: true });
@@ -182,7 +182,7 @@ test.describe('full interactive playthrough and persistence', () => {
     await page.goto(gameUrl);
     await expect(page.locator('#introtitle')).toBeVisible();
     const first=page.locator('#modal [data-v2="close"]');
-    await expect(first).toBeFocused();
+    await expect(page.locator('#introtitle')).toBeFocused();
     await page.keyboard.press('Tab');
     await expect(first).toBeFocused();
     await page.keyboard.press('Shift+Tab');
