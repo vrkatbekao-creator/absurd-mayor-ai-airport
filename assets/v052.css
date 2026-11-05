@@ -1,0 +1,5 @@
+.v052-assessment{margin:18px 0;padding:14px 0;border-top:1px solid #c6d4bd;border-bottom:1px solid #c6d4bd;overflow-wrap:anywhere}
+.v052-assessment h3{margin:0 0 10px;font-size:18px}.v052-assessment-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.v052-assessment article{border:1px solid #b5c8aa;background:#eff3e6;border-radius:9px;padding:12px;min-width:0}
+.v052-assessment article:nth-child(2){background:#f6efdf;border-color:#d7c8a8}.v052-assessment small{font-weight:700;color:#496149;font-size:12px}.v052-assessment h4{margin:6px 0;font-size:17px;line-height:1.45;color:#204738}.v052-assessment p{font-size:13px;line-height:1.6;margin:7px 0}
+.v052-assessment dl{margin:8px 0 0}.v052-assessment dl div{padding:6px 0;border-top:1px solid #d6dfce;display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 10px}.v052-assessment dt{font-size:12px}.v052-assessment dd{margin:0;font-size:14px;font-weight:750;max-width:100%}
+@media(max-width:600px){.v052-assessment-grid{grid-template-columns:1fr}.v052-assessment{padding:12px 0}.v052-assessment h4{font-size:17px}}

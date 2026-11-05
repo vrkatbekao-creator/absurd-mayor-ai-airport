@@ -20,6 +20,7 @@ if addon.exists():
     s=s.replace(anchor,code+'\n'+anchor)
     s=s.replace('function mountV51(){configureV51();','function mountV51(){configureV51();configureV052();')
     s=s.replace('${epilogue51()}${promiseAudit()}','${assessmentPanel52()}${epilogue51()}${promiseAudit()}')
+    s=s.replace('${promises().filter(Boolean).length}/3','${esc(pledgeSummary52(game))}')
     s=s.replace("document.getElementById('news').textContent=last?msg(last.key):msg('intro');","document.getElementById('news').textContent=last?milestoneText52(game,last):msg('intro');")
     s=s.replace("if(e.kind==='milestone')return msg(e.key);","if(e.kind==='milestone')return milestoneText52(game,e);")
     before="if(e.kind==='milestone')return [e.key.startsWith('milestone4')?'employee':e.key.startsWith('milestone8')?'engineer':'reporter',e.key.replace('milestone','checkpoint')];"
@@ -28,7 +29,6 @@ if addon.exists():
     s=s.replace(before,after)
     if 'function epilogue52(' in code:
         s=s.replace('${epilogue51()}${promiseAudit()}','${epilogue52()}${promiseAudit()}')
-        s=s.replace("const r=storyReaction51(e);return '<li>","const r=storyReaction51(e);return '<li>")
     if (root/'assets/v052.css').exists():
         s=s.replace('</style>',(root/'assets/v052.css').read_text(encoding='utf-8')+'\n</style>')
 (root/'荒謬市長_v0.5.2.html').write_bytes(s.encode('utf-8'))
