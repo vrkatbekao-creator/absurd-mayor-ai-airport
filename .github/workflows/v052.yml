@@ -1,0 +1,85 @@
+name: V0.5.2 acceptance
+on:
+  pull_request:
+    paths:
+      - '荒謬市長_v0.5.2.html'
+      - 'assets/v052*'
+      - 'scripts/*v052*'
+      - 'tests/*v052*'
+      - '.github/workflows/v052.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Reproduce single offline HTML
+        run: |
+          python3 scripts/build-v052.py
+          git diff --exit-code -- 荒謬市長_v0.5.2.html
+      - run: node --test tests/finance-v052.test.cjs tests/startup-v052.test.cjs tests/narrative-v052.test.cjs
+      - run: node scripts/regression-v052.cjs --seeds=2000
+      - name: Match recorded regression and preserve released HTML
+        run: |
+          node - <<'JS'
+          const fs=require('node:fs'),assert=require('node:assert/strict'),crypto=require('node:crypto');
+          assert.deepEqual(JSON.parse(fs.readFileSync('artifacts/regression-v0.5.2.json')),JSON.parse(fs.readFileSync('qa/regression-v0.5.2.json')));
+          for(const [version,sha] of Object.entries({'0.5.0':'8385e6e93929c68272dcf8c263a3caa0c4b0d825','0.5.1':'5b52a81fd437a5151702c7b44b7151ab116f80f6','0.5.1.1':'0b102f7eeaf496666a8c068688c77ad05497dd88'})){
+            const bytes=fs.readFileSync('荒謬市長_v'+version+'.html');assert.equal(crypto.createHash('sha1').update('blob '+bytes.length+'\0').update(bytes).digest('hex'),sha,version);
+          }
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v052-core-and-paired-regression
+          path: artifacts/*v0.5.2.json
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --package-lock=false @playwright/test@1.56.1
+      - name: Install system dependencies without orphaning package-manager locks
+        timeout-minutes: 7
+        run: |
+          printf 'Acquire::Retries "2";\nAcquire::http::Timeout "20";\nAcquire::https::Timeout "20";\nDPkg::Lock::Timeout "60";\n' | sudo tee /etc/apt/apt.conf.d/80mayor-ci
+          npx playwright install-deps ${{ matrix.browser }}
+      - name: Download browser with bounded retries
+        timeout-minutes: 7
+        env:
+          PLAYWRIGHT_DOWNLOAD_CONNECTION_TIMEOUT: '60000'
+        run: |
+          for attempt in 1 2 3; do
+            if timeout 120s npx playwright install ${{ matrix.browser }}; then exit 0; fi
+          done
+          exit 1
+      - name: Enable headless audio output
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pulseaudio pulseaudio-utils
+          pulseaudio --start --exit-idle-time=-1
+          pactl load-module module-null-sink sink_name=mayor_test sink_properties=device.description=MayorTest
+          pactl set-default-sink mayor_test
+      - run: npx playwright test -c tests/v052-playwright.config.cjs --project=${{ matrix.browser }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v052-browser-${{ matrix.browser }}
+          path: |
+            artifacts/v052-screenshots/
+            artifacts/v052-playwright-report/
+            artifacts/v052-test-results/
+          retention-days: 14
