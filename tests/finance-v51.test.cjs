@@ -48,13 +48,13 @@ test('fixed finance route works across 1000 reproducible shuffled policy orders 
  const report={seeds:1000,minEndingSupport:minPop,minEndingTreasury:minMoney,minEndingAI:minAI,scope:'One fixed finance route with an adaptive safe-policy rule; not a proof of universal balance.'};
  fs.writeFileSync(path.join(__dirname,'../artifacts/v51-seed-summary.json'),JSON.stringify(report,null,2));
 });
-test('V5.0 import preserves original storage and never duplicates its cash or capital',()=>{
- const old=environment({},41,'荒謬市長_v5.0.html');const g=old.api.game;g.phase='build';old.api.administration(g,'investment');g.phase='build';old.api.develop(g,0,'park');old.api.doSettle(g);
+test('V0.5.0 import preserves original storage and never duplicates its cash or capital',()=>{
+ const old=environment({},41,'荒謬市長_v0.5.0.html');const g=old.api.game;g.phase='build';old.api.administration(g,'investment');g.phase='build';old.api.develop(g,0,'park');old.api.doSettle(g);
  const saved=JSON.stringify(g),e=environment({'absurd-mayor-v02':saved});assert.equal(e.api.game.version,3);assert.equal(e.api.game.money,g.money);assert.equal(e.api.game.private,8);assert.equal(e.api.game.finance.capital.length,0);assert.equal(e.api.publicBurden(e.api.game),6);assert.equal(e.api.promises(e.api.game)[2],false);assert.equal(e.api.game.story.incomplete,true);assert.equal(e.api.valid(e.api.game),true);assert.equal(e.storage.get('absurd-mayor-v02'),saved);
  const reload=environment({'absurd-mayor-v51':JSON.stringify(e.api.game),'absurd-mayor-v02':saved});assert.equal(reload.api.game.finance.legacy,true);
 });
-test('invalid V5.1 save starts fresh and does not silently revert to V5.0',()=>{
- const e=environment({'absurd-mayor-v51':'{"version":3}','absurd-mayor-v02':JSON.stringify(environment({},1,'荒謬市長_v5.0.html').api.game)});assert.equal(e.api.game.finance.legacy,false);assert.equal(e.api.game.spent,0);
+test('invalid V0.5.1 save starts fresh and does not silently revert to V0.5.0',()=>{
+ const e=environment({'absurd-mayor-v51':'{"version":3}','absurd-mayor-v02':JSON.stringify(environment({},1,'荒謬市長_v0.5.0.html').api.game)});assert.equal(e.api.game.finance.legacy,false);assert.equal(e.api.game.spent,0);
 });
 test('reject corrupted allocations, overspending, duplicated ids and missing ledger fields',()=>{
  const {env,g}=play();for(const mutate of [x=>delete x.finance,x=>x.finance.capital[0].used++,x=>x.finance.projects[0].private++,x=>x.finance.capital.push({...x.finance.capital[0]}),x=>x.finance.capital[0].amount=999,x=>x.private=999,x=>x.story.events[0].card=999]){

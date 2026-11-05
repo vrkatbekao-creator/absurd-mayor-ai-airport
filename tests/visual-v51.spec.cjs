@@ -1,6 +1,6 @@
 'use strict';
 const {test,expect}=require('@playwright/test'),{pathToFileURL}=require('node:url'),path=require('node:path'),fs=require('node:fs');
-const url=pathToFileURL(path.resolve(__dirname,'../荒謬市長_v5.1.html')).href;
+const url=pathToFileURL(path.resolve(__dirname,'../荒謬市長_v0.5.1.html')).href;
 const root=path.resolve(__dirname,'../artifacts/v51-screenshots');
 async function start(page,lang='zh'){
  await page.addInitScript(()=>{let seed=41;Math.random=()=>((seed=(seed*16807)%2147483647)-1)/2147483646});await page.goto(url);await page.locator('.lang select').selectOption(lang);await page.locator('[data-v2="close"]').click();
@@ -51,8 +51,8 @@ for(const lang of ['zh','en','fr','nl']){
   await start(page,lang);await expect(page.locator('[data-music-toggle]').first()).toHaveAttribute('aria-pressed','false');const button=page.locator('[data-music-toggle]').first();await button.focus();await page.keyboard.press('Enter');await expect(button).toHaveAttribute('aria-pressed','true',{timeout:15000});await page.keyboard.press('Enter');await expect(button).toHaveAttribute('aria-pressed','false');await noOverflow(page);
  });
 }
-test('legacy import is conservative, explicit and leaves V5.0 untouched',async({page})=>{
- const {environment}=require('./v51-engine.cjs');const old=environment({},41,'荒謬市長_v5.0.html').api.game;old.turn=4;const raw=JSON.stringify(old);
+test('legacy import is conservative, explicit and leaves V0.5.0 untouched',async({page})=>{
+ const {environment}=require('./v51-engine.cjs');const old=environment({},41,'荒謬市長_v0.5.0.html').api.game;old.turn=4;const raw=JSON.stringify(old);
  await page.addInitScript(raw=>localStorage.setItem('absurd-mayor-v02',raw),raw);await page.goto(url);const r=await state(page);expect(r.game.finance.legacy).toBe(true);expect(r.pledges[2]).toBe(false);expect(r.game.finance.capital).toEqual([]);expect(await page.evaluate(()=>localStorage.getItem('absurd-mayor-v02'))).toBe(raw);
  await page.locator('#v51-ledger-host summary').click();await expect(page.locator('#v51-ledger-host .v51-notice')).toBeVisible();await page.reload();expect((await state(page)).game.story.incomplete).toBe(true);
 });

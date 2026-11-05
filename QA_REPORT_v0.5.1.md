@@ -1,4 +1,4 @@
-# V5.1 QA 記錄
+# V0.5.1 QA 記錄
 
 候選版 PR：[#19](https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/pull/19)。完整雲端驗證以該 PR 最新原始碼提交的 Checks 結果為準；不以舊提交的綠燈代替新程式的驗證。
 

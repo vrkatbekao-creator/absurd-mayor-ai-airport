@@ -1,6 +1,6 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
-function environment(save={},seed=41,file='荒謬市長_v5.1.html'){
+function environment(save={},seed=41,file='荒謬市長_v0.5.1.html'){
  const html=fs.readFileSync(path.join(__dirname,'..',file),'utf8');
  const scripts=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)].map(x=>x[1]);
  const storage=new Map(Object.entries(save)),localStorage={getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,''+v),removeItem:k=>storage.delete(k)};
@@ -10,7 +10,7 @@ function environment(save={},seed=41,file='荒謬市長_v5.1.html'){
  if(cuts.some(n=>n<0))throw Error('Engine cut missing');
  for(let i=0;i<2;i++)vm.runInContext(scripts[i].slice(0,cuts[i]),ctx,{timeout:3000});
  const names='game,newGame,valid,metrics,promises,endingKey,choosePolicy,develop,upgrade,administration,deferAction,doSettle,builds,cards,municipal';
- const extra=file.includes('v5.1')?',projectQuote,publicBurden,pendingBurden,financeReady,takeLoan,migrateV50,validV2,storyReaction51,eventTitle51,source51,epilogue51,F51,configureV51':'';
+ const extra=(file.includes('v0.5.1')||file.includes('v5.1'))?',projectQuote,publicBurden,pendingBurden,financeReady,takeLoan,migrateV50,validV2,storyReaction51,eventTitle51,source51,epilogue51,F51,configureV51':'';
  const api=vm.runInContext('({'+names+extra+'})',ctx);return {api,ctx,storage};
 }
 function safePolicy(api,g){

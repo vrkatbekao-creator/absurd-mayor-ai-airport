@@ -20,8 +20,8 @@ const F51={
  unpaid:L('待支付','Unpaid','À payer','Te betalen'),
  source:L('源自決策','Decision source','Décision d’origine','Oorspronkelijk besluit'),
  unknown:L('歷史不完整，無法核實','Incomplete history; unverifiable','Historique incomplet ; invérifiable','Onvolledige historie; niet verifieerbaar'),
- migration:L('已複製 V5.0 進度；原存檔保留。舊建設支出全數列公共自付，歷史外資不再增加專款。舊歷史不完整，零公共負擔政見無法核實；可開新局取得完整帳目。','V5.0 progress was copied; the original save is preserved. Earlier building costs are public payments; historical investment grants no new project funds. Incomplete history makes the zero-public-cost pledge unverifiable. Start a new game for a complete ledger.','Progression V5.0 copiée ; l’original est conservé. Les anciens chantiers restent publics, sans nouveaux fonds privés. Historique incomplet : promesse de charge publique nulle invérifiable. Une nouvelle partie offre un compte complet.','V5.0-voortgang gekopieerd; de oorspronkelijke opslag blijft bewaard. Oude bouwkosten blijven publiek en oud kapitaal geeft geen nieuw projectgeld. De belofte is door ontbrekende historie niet verifieerbaar. Een nieuw spel heeft een volledig kasboek.'),
- invalid:L('V5.1 存檔無效，已開新局；V5.0 原存檔保留。','Invalid V5.1 save; a new game started. The V5.0 save is preserved.','Sauvegarde V5.1 invalide ; nouvelle partie. L’original V5.0 est conservé.','Ongeldige V5.1-opslag; nieuw spel gestart. V5.0-opslag blijft bewaard.'),
+ migration:L('已複製 V0.5.0 進度；原存檔保留。舊建設支出全數列公共自付，歷史外資不再增加專款。舊歷史不完整，零公共負擔政見無法核實；可開新局取得完整帳目。','V0.5.0 progress was copied; the original save is preserved. Earlier building costs are public payments; historical investment grants no new project funds. Incomplete history makes the zero-public-cost pledge unverifiable. Start a new game for a complete ledger.','Progression V0.5.0 copiée ; l’original est conservé. Les anciens chantiers restent publics, sans nouveaux fonds privés. Historique incomplet : promesse de charge publique nulle invérifiable. Une nouvelle partie offre un compte complet.','V0.5.0-voortgang gekopieerd; de oorspronkelijke opslag blijft bewaard. Oude bouwkosten blijven publiek en oud kapitaal geeft geen nieuw projectgeld. De belofte is door ontbrekende historie niet verifieerbaar. Een nieuw spel heeft een volledig kasboek.'),
+ invalid:L('V0.5.1 存檔無效，已開新局；V0.5.0 原存檔保留。','Invalid V0.5.1 save; a new game started. The V0.5.0 save is preserved.','Sauvegarde V0.5.1 invalide ; nouvelle partie. L’original V0.5.0 est conservé.','Ongeldige V0.5.1-opslag; nieuw spel gestart. V0.5.0-opslag blijft bewaard.'),
  construction:L('總建設成本','Total construction cost','Coût total des chantiers','Totale bouwkosten'),
  noProjects:L('尚無專案分配','No project allocations yet','Aucune affectation pour le moment','Nog geen projecttoewijzingen'),
  story:L('城市記憶','City memory','Mémoire de la ville','Stadsgeheugen'),
@@ -64,7 +64,7 @@ const ft=k=>F51[k][lang];
 function configureV51(){
  M.invalid51=F51.invalid;M.migrated51=F51.migration;M.publicCost=F51.public;M.spend=F51.construction;
  M.promise3=L('轉型專案公共負擔為零（含已簽約義務）','Zero public project cost, including contracted payments','Charge publique des projets nulle, obligations incluses','Geen publieke projectlasten, inclusief contractuele betalingen');
- for(const l of ['zh','en','fr','nl']){M.title[l]+=' · V5.1';UX[l].public=M.promise3[l];UX[l].measurePublic=F51.public[l];for(const k of ['investment','partnership','greenfund'])A[l][k]=F51[k][l]}
+ for(const l of ['zh','en','fr','nl']){M.title[l]+=' · V0.5.1';UX[l].public=M.promise3[l];UX[l].measurePublic=F51.public[l];for(const k of ['investment','partnership','greenfund'])A[l][k]=F51[k][l]}
 }
 function fundingChips(g,type,cost){const q=projectQuote(g,type,cost);return v041Badge('🏦',ft('equity'),q.private,false)+v041Badge('🏛',ft('public'),q.public,q.public>0)}
 function adminCard51(k,a){const rule=financeRule(k),used=!!game.adminUsed[k],ready=!rule||financeReady(game,k),hint=rule?ft(({investment:'seedHelp',partnership:'tenantHelp',greenfund:'greenHelp'})[k]):'';

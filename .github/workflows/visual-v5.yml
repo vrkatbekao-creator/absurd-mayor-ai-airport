@@ -1,8 +1,8 @@
-name: V5.0 browser regression
+name: V0.5.0 browser regression
 on:
   pull_request:
     paths:
-      - '荒謬市長_v5.0.html'
+      - '荒謬市長_v0.5.0.html'
       - 'tests/visual-v5.spec.cjs'
       - 'tests/v5-playwright.config.cjs'
       - '.github/workflows/visual-v5.yml'

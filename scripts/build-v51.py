@@ -1,9 +1,9 @@
-"""Reproduce the single offline V5.1 HTML from the preserved V5.0 release."""
+"""Reproduce the single offline V0.5.1 HTML from the preserved V0.5.0 release."""
 from pathlib import Path
 import re
 
 root = Path(__file__).resolve().parents[1]
-s = (root / '荒謬市長_v5.0.html').read_text(encoding='utf-8')
+s = (root / '荒謬市長_v0.5.0.html').read_text(encoding='utf-8')
 
 def replace(old, new):
     global s
@@ -73,5 +73,6 @@ replace("changes=['money','pop','ai','hype','debt','traffic','power']", "changes
 replace("drawV2();if(!game.finished&&game.turn===1&&game.phase==='policy')showIntro(notice);", "mountV51();drawV2();if(!game.finished&&game.turn===1&&game.phase==='policy')showIntro(notice);")
 style=(root/'assets/v51.css').read_text(encoding='utf-8')
 replace('</style>', '\n'+style+'\n</style>')
+(root/'荒謬市長_v0.5.1.html').write_bytes(s.encode('utf-8'))
 (root/'荒謬市長_v5.1.html').write_bytes(s.encode('utf-8'))
-print('Built offline V5.1:',len(s.encode('utf-8')),'bytes')
+print('Built offline V0.5.1:',len(s.encode('utf-8')),'bytes')

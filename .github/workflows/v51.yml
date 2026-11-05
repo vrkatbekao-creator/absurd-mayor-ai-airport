@@ -1,7 +1,9 @@
-name: V5.1 finance, story and browser QA
+name: V0.5.1 finance, story and browser QA
 on:
   pull_request:
     paths:
+      - '荒謬市長_v0.5.1.html'
+      - '荒謬市長_v0.5.0.html'
       - '荒謬市長_v5.1.html'
       - 'assets/v51*'
       - 'scripts/build-v51.py'
@@ -22,7 +24,7 @@ jobs:
       - name: Check reproducible offline build
         run: |
           python3 scripts/build-v51.py
-          git diff --exit-code -- 荒謬市長_v5.1.html
+          git diff --exit-code -- 荒謬市長_v0.5.1.html
       - name: Finance, migration, causal history and 1000 policy orders
         run: node --test tests/finance-v51.test.cjs
       - uses: actions/upload-artifact@v4

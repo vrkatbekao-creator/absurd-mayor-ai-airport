@@ -48,7 +48,7 @@
 .v042-closure{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 @media(max-width:600px){#map .tile strong{font-size:12px;padding:6px 3px}.v042-map-state{font-size:12px}}
 
-/* V5.0: optional offline campaign music, accessible in the ending dialog too. */
+/* V0.5.0: optional offline campaign music, accessible in the ending dialog too. */
 .v5-audio-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 14px;padding:9px 12px;background:#f8f5e9;border:1px solid #c4d3bc;border-radius:9px;font-size:13px}
 .v5-music-button{border:1px solid #315d46;border-radius:7px;background:#ecf2e4;color:#204332;min-height:44px;padding:8px 12px;font:inherit;font-weight:700;cursor:pointer}
 .v5-music-button[aria-pressed="true"]{background:#27583f;color:#fff}.v5-music-button:focus-visible,#v5-music-volume:focus-visible{outline:3px solid #d88742;outline-offset:3px}
@@ -161,7 +161,7 @@ const M={
  invalid:L('v0.2 存檔無效，已安全開啟新局。','Invalid v0.2 save; a new game has started safely.','Sauvegarde v0.2 invalide ; nouvelle partie démarrée.','Ongeldige v0.2-opslag; een nieuw spel is gestart.'),
  epiloguePartial:L('部分航班仍在營運。市府將縮減改建稱為「彈性轉型」；AI 園區未能完全填補失去的機場收入。','Some flights remain. City hall calls the scaled-back redevelopment a flexible transition; AI has not fully replaced the airport income lost.','Des vols subsistent. La ville parle de transition flexible ; l’IA ne compense pas entièrement les revenus aéroportuaires perdus.','Er vliegen nog toestellen. De stad noemt de kleinere herontwikkeling een flexibele transitie; AI compenseert de verloren luchthaveninkomsten niet volledig.'),turnaround:L('機場政策大轉彎','Airport policy U-turn','Revirement sur l’aéroport','Ommekeer luchthavenbeleid'),purchased:L('私人共同投資','Private co-investment','Cofinancement privé','Particuliere co-investering'),funds:L('財務','Finance','Finances','Financiën'),yes:L('達成','Met','Tenue','Behaald'),no:L('未達成','Not met','Non tenue','Niet behaald'),
 };
-/* V5.1 finance: segregated paid-in equity, project allocations and public liabilities. */
+/* V0.5.1 finance: segregated paid-in equity, project allocations and public liabilities. */
 function newFinance(){return {version:1,legacy:false,legacySpent:0,legacyPrivate:0,capital:[],projects:[],charges:[],obligations:[],share:false}}
 function newStory(){return {version:1,incomplete:false,events:[]}}
 function remember(g,event){g.story.events.push({turn:g.turn,...event})}
@@ -272,8 +272,8 @@ const F51={
  unpaid:L('待支付','Unpaid','À payer','Te betalen'),
  source:L('源自決策','Decision source','Décision d’origine','Oorspronkelijk besluit'),
  unknown:L('歷史不完整，無法核實','Incomplete history; unverifiable','Historique incomplet ; invérifiable','Onvolledige historie; niet verifieerbaar'),
- migration:L('已複製 V5.0 進度；原存檔保留。舊建設支出全數列公共自付，歷史外資不再增加專款。舊歷史不完整，零公共負擔政見無法核實；可開新局取得完整帳目。','V5.0 progress was copied; the original save is preserved. Earlier building costs are public payments; historical investment grants no new project funds. Incomplete history makes the zero-public-cost pledge unverifiable. Start a new game for a complete ledger.','Progression V5.0 copiée ; l’original est conservé. Les anciens chantiers restent publics, sans nouveaux fonds privés. Historique incomplet : promesse de charge publique nulle invérifiable. Une nouvelle partie offre un compte complet.','V5.0-voortgang gekopieerd; de oorspronkelijke opslag blijft bewaard. Oude bouwkosten blijven publiek en oud kapitaal geeft geen nieuw projectgeld. De belofte is door ontbrekende historie niet verifieerbaar. Een nieuw spel heeft een volledig kasboek.'),
- invalid:L('V5.1 存檔無效，已開新局；V5.0 原存檔保留。','Invalid V5.1 save; a new game started. The V5.0 save is preserved.','Sauvegarde V5.1 invalide ; nouvelle partie. L’original V5.0 est conservé.','Ongeldige V5.1-opslag; nieuw spel gestart. V5.0-opslag blijft bewaard.'),
+ migration:L('已複製 V0.5.0 進度；原存檔保留。舊建設支出全數列公共自付，歷史外資不再增加專款。舊歷史不完整，零公共負擔政見無法核實；可開新局取得完整帳目。','V0.5.0 progress was copied; the original save is preserved. Earlier building costs are public payments; historical investment grants no new project funds. Incomplete history makes the zero-public-cost pledge unverifiable. Start a new game for a complete ledger.','Progression V0.5.0 copiée ; l’original est conservé. Les anciens chantiers restent publics, sans nouveaux fonds privés. Historique incomplet : promesse de charge publique nulle invérifiable. Une nouvelle partie offre un compte complet.','V0.5.0-voortgang gekopieerd; de oorspronkelijke opslag blijft bewaard. Oude bouwkosten blijven publiek en oud kapitaal geeft geen nieuw projectgeld. De belofte is door ontbrekende historie niet verifieerbaar. Een nieuw spel heeft een volledig kasboek.'),
+ invalid:L('V0.5.1 存檔無效，已開新局；V0.5.0 原存檔保留。','Invalid V0.5.1 save; a new game started. The V0.5.0 save is preserved.','Sauvegarde V0.5.1 invalide ; nouvelle partie. L’original V0.5.0 est conservé.','Ongeldige V0.5.1-opslag; nieuw spel gestart. V0.5.0-opslag blijft bewaard.'),
  construction:L('總建設成本','Total construction cost','Coût total des chantiers','Totale bouwkosten'),
  noProjects:L('尚無專案分配','No project allocations yet','Aucune affectation pour le moment','Nog geen projecttoewijzingen'),
  story:L('城市記憶','City memory','Mémoire de la ville','Stadsgeheugen'),
@@ -316,7 +316,7 @@ const ft=k=>F51[k][lang];
 function configureV51(){
  M.invalid51=F51.invalid;M.migrated51=F51.migration;M.publicCost=F51.public;M.spend=F51.construction;
  M.promise3=L('轉型專案公共負擔為零（含已簽約義務）','Zero public project cost, including contracted payments','Charge publique des projets nulle, obligations incluses','Geen publieke projectlasten, inclusief contractuele betalingen');
- for(const l of ['zh','en','fr','nl']){M.title[l]+=' · V5.1';UX[l].public=M.promise3[l];UX[l].measurePublic=F51.public[l];for(const k of ['investment','partnership','greenfund'])A[l][k]=F51[k][l]}
+ for(const l of ['zh','en','fr','nl']){M.title[l]+=' · V0.5.1';UX[l].public=M.promise3[l];UX[l].measurePublic=F51.public[l];for(const k of ['investment','partnership','greenfund'])A[l][k]=F51[k][l]}
 }
 function fundingChips(g,type,cost){const q=projectQuote(g,type,cost);return v041Badge('🏦',ft('equity'),q.private,false)+v041Badge('🏛',ft('public'),q.public,q.public>0)}
 function adminCard51(k,a){const rule=financeRule(k),used=!!game.adminUsed[k],ready=!rule||financeReady(game,k),hint=rule?ft(({investment:'seedHelp',partnership:'tenantHelp',greenfund:'greenHelp'})[k]):'';
@@ -683,10 +683,10 @@ const MayorScore = (() => {
 /* Audio preferences are separate from the version-2 game save. */
 (() => {
  const key='absurd-mayor-audio-settings-v1',labels={
-  zh:{loading:'正在啟用配樂…',play:'播放配樂',pause:'暫停配樂',volume:'音量',on:'配樂已播放',off:'配樂已暫停',error:'此瀏覽器暫時無法播放配樂',title:'V5.0 · 城市向前 — 原創競選配樂'},
-  en:{loading:'Starting music…',play:'Play music',pause:'Pause music',volume:'Volume',on:'Music playing',off:'Music paused',error:'Music is unavailable in this browser',title:'V5.0 · City on the Move — original campaign music'},
-  fr:{loading:'Activation…',play:'Activer la musique',pause:'Mettre en pause',volume:'Volume',on:'Musique activée',off:'Musique en pause',error:'La musique est indisponible dans ce navigateur',title:'V5.0 · En avant, la ville — musique de campagne originale'},
-  nl:{loading:'Muziek starten…',play:'Muziek afspelen',pause:'Muziek pauzeren',volume:'Volume',on:'Muziek speelt',off:'Muziek gepauzeerd',error:'Muziek is niet beschikbaar in deze browser',title:'V5.0 · De stad vooruit — originele campagnemuziek'}
+  zh:{loading:'正在啟用配樂…',play:'播放配樂',pause:'暫停配樂',volume:'音量',on:'配樂已播放',off:'配樂已暫停',error:'此瀏覽器暫時無法播放配樂',title:'V0.5.0 · 城市向前 — 原創競選配樂'},
+  en:{loading:'Starting music…',play:'Play music',pause:'Pause music',volume:'Volume',on:'Music playing',off:'Music paused',error:'Music is unavailable in this browser',title:'V0.5.0 · City on the Move — original campaign music'},
+  fr:{loading:'Activation…',play:'Activer la musique',pause:'Mettre en pause',volume:'Volume',on:'Musique activée',off:'Musique en pause',error:'La musique est indisponible dans ce navigateur',title:'V0.5.0 · En avant, la ville — musique de campagne originale'},
+  nl:{loading:'Muziek starten…',play:'Muziek afspelen',pause:'Muziek pauzeren',volume:'Volume',on:'Muziek speelt',off:'Muziek gepauzeerd',error:'Muziek is niet beschikbaar in deze browser',title:'V0.5.0 · De stad vooruit — originele campagnemuziek'}
  };
  let volume=28;try{const p=JSON.parse(localStorage.getItem(key));if(Number.isFinite(p?.volume))volume=Math.max(0,Math.min(100,p.volume))}catch(_){}
  let mix=null,wanted=false,ready=false,timer=null,epoch=0,index=0,loop=0,error=false;const score=MayorScore.plan();

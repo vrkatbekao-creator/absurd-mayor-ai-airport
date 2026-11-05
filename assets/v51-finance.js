@@ -1,4 +1,4 @@
-/* V5.1 finance: segregated paid-in equity, project allocations and public liabilities. */
+/* V0.5.1 finance: segregated paid-in equity, project allocations and public liabilities. */
 function newFinance(){return {version:1,legacy:false,legacySpent:0,legacyPrivate:0,capital:[],projects:[],charges:[],obligations:[],share:false}}
 function newStory(){return {version:1,incomplete:false,events:[]}}
 function remember(g,event){g.story.events.push({turn:g.turn,...event})}
