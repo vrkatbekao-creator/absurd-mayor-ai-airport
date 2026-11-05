@@ -1,0 +1,71 @@
+name: V0.5.2 acceptance
+on:
+  pull_request:
+    paths:
+      - '荒謬市長_v0.5.2.html'
+      - 'assets/v052*'
+      - 'scripts/*v052*'
+      - 'tests/*v052*'
+      - '.github/workflows/v052.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Reproduce single offline HTML
+        run: |
+          python3 scripts/build-v052.py
+          git diff --exit-code -- 荒謬市長_v0.5.2.html
+      - run: node --test tests/finance-v052.test.cjs tests/startup-v052.test.cjs tests/narrative-v052.test.cjs
+      - run: node scripts/regression-v052.cjs --seeds=2000
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v052-core-and-paired-regression
+          path: artifacts/*v0.5.2.json
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --package-lock=false @playwright/test@1.56.1
+      - name: Install browser with bounded retries
+        timeout-minutes: 7
+        env:
+          PLAYWRIGHT_DOWNLOAD_CONNECTION_TIMEOUT: '60000'
+        run: |
+          for attempt in 1 2 3; do
+            if timeout 120s npx playwright install --with-deps ${{ matrix.browser }}; then exit 0; fi
+          done
+          exit 1
+      - name: Enable headless audio output
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pulseaudio pulseaudio-utils
+          pulseaudio --start --exit-idle-time=-1
+          pactl load-module module-null-sink sink_name=mayor_test sink_properties=device.description=MayorTest
+          pactl set-default-sink mayor_test
+      - run: npx playwright test -c tests/v052-playwright.config.cjs --project=${{ matrix.browser }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v052-browser-${{ matrix.browser }}
+          path: |
+            artifacts/v052-screenshots/
+            artifacts/v052-playwright-report/
+            artifacts/v052-test-results/
+          retention-days: 14
