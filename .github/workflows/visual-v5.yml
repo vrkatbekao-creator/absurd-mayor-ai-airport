@@ -21,7 +21,16 @@ jobs:
       - name: Install Playwright runner
         run: npm install --no-save --package-lock=false @playwright/test@1.56.1
       - name: Install real browser engines
-        run: npx playwright install --with-deps chromium firefox webkit
+        timeout-minutes: 7
+        env:
+          PLAYWRIGHT_DOWNLOAD_CONNECTION_TIMEOUT: '60000'
+        run: |
+          for attempt in 1 2 3; do
+            if timeout 120s npx playwright install --with-deps chromium firefox webkit; then
+              exit 0
+            fi
+          done
+          exit 1
       - name: Provide a real audio backend for headless browser output
         run: |
           sudo apt-get update

@@ -9,6 +9,7 @@ on:
       - 'scripts/build-v51.py'
       - 'tests/*v51*'
       - '.github/workflows/v51.yml'
+      - '.github/workflows/visual-v5.yml'
   workflow_dispatch:
 permissions:
   contents: read
