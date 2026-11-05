@@ -16,3 +16,9 @@ The preview is rendered from the same score and synthesis used by the game, rath
 Local Chrome: 30 passed, including the inherited four-language/three-size matrix, full playthrough, save equality, audio controls in four languages, unsupported-audio fallback, rapid toggles, visibility suspension, ending-dialog pause and representative rendered PCM at the loop junction. These signal checks do not replace the user's artistic listening judgement. A full manual screen-reader and device speaker/headphone audit has not been performed.
 
 The GitHub PR records the exact final CI head and all Chromium/Firefox/WebKit results. V5.0 is the version label requested for this music addition; game save version 2 and previous game files are preserved.
+
+
+## Initial CI finding and correction
+The first full CI run passed 86 cases and failed four Firefox activation cases: the realtime context remained suspended. The runner had libpulse but no configured audio server. The CI harness now starts PulseAudio with a null output sink before testing, retaining the original keyboard gesture and running-state assertions. This follows the headless Firefox backend requirement documented by the maintainer of [playwright-audio-mocking](https://github.com/tsuemura/playwright-audio-mocking#notes--caveats); no microphone mocking or autoplay bypass is used here.
+
+Independently, the app now shows a starting state and returns to a visible, non-blocking error after five seconds if the audio backend never starts. A pending-backend test verifies that gameplay remains usable. Test reports use explicit paths so failed-case evidence is uploaded reliably. Final CI results are recorded in the PR.

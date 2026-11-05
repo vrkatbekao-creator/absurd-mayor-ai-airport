@@ -444,3 +444,13 @@ test('music can be paused with the ending keyboard focus trap active',async({pag
  await expect(page.locator('#endtitle')).toBeFocused();const button=page.locator('#modal [data-music-toggle]');await expect(button).toHaveAttribute('aria-pressed','true');
  await button.focus();await page.keyboard.press('Enter');await expect(button).toHaveAttribute('aria-pressed','false');await expect(button).toBeFocused();
 });
+
+
+test('an audio backend that never starts times out without blocking gameplay',async({page})=>{
+ await page.addInitScript(()=>{const A=window.AudioContext||window.webkitAudioContext;window.AudioContext=function(...args){const c=new A(...args);c.resume=()=>new Promise(()=>{});return c}});
+ await start(page);await page.locator('.v5-audio-bar [data-music-toggle]').click();
+ await expect(page.locator('.v5-audio-bar [data-music-toggle]')).toHaveAttribute('aria-busy','true');
+ await page.locator('[data-v2="policy"]').first().click();await expect(page.locator('.action-tabs')).toBeVisible();
+ await expect(page.locator('#v5-music-status')).toBeVisible({timeout:8000});
+ await expect(page.locator('.v5-audio-bar [data-music-toggle]')).toHaveAttribute('aria-pressed','false');
+});

@@ -1,4 +1,5 @@
 'use strict';
+const path = require('node:path');
 const { defineConfig, devices } = require('@playwright/test');
 module.exports = defineConfig({
   testDir: __dirname,
@@ -6,8 +7,8 @@ module.exports = defineConfig({
   timeout: 60000,
   expect: {timeout:15000},
   workers:2,retries:0,
-  reporter: [['list'],['html',{outputFolder:'artifacts/v5-playwright-report',open:'never'}]],
-  outputDir:'artifacts/v5-test-results',
+  reporter: [['list'],['html',{outputFolder:path.resolve(__dirname,'../artifacts/v5-playwright-report'),open:'never'}]],
+  outputDir:path.resolve(__dirname,'../artifacts/v5-test-results'),
   projects:[
     {name:'chromium',use:{...devices['Desktop Chrome']}},
     {name:'firefox',use:{...devices['Desktop Firefox']}},
