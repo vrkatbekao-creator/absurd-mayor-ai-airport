@@ -213,7 +213,7 @@ function validFinance(g){
   let sum=0;const seen=new Set();for(const a of p.allocations){const c=f.capital.find(c=>c.id===a.capitalId);if(!c||c.turn>p.turn||!capitalEligible(c,p.type)||!integer(a.amount)||a.amount===0||seen.has(c.id))return false;seen.add(c.id);sum+=a.amount;used.set(c.id,used.get(c.id)+a.amount)}if(sum!==p.private)return false;
  }
  if(f.capital.some(c=>used.get(c.id)!==c.used)||g.spent!==f.legacySpent+f.projects.reduce((n,p)=>n+p.cost,0)||g.private!==f.legacyPrivate+f.capital.reduce((n,c)=>n+c.amount,0)||f.share!==f.capital.some(c=>c.kind==='partnership'))return false;
- for(const c of f.charges)if(!turn(c.turn)||c.turn>g.turn||!integer(c.amount)||c.amount===0||!['policy','admin'].includes(c.kind))return false;
+ for(const c of f.charges)if(!turn(c.turn)||c.turn>g.turn||!integer(c.amount)||c.amount===0||!['policy','admin','financing'].includes(c.kind))return false;
  const obligations=new Set();for(const o of f.obligations){if(typeof o.id!=='string'||obligations.has(o.id)||!integer(o.amount)||!o.amount||!Number.isInteger(o.due)||o.due<1||o.due>15||!['policy','loan','legacy'].includes(o.origin)||typeof o.paid!=='boolean'||(o.sourceTurn!==null&&(!turn(o.sourceTurn)||o.sourceTurn>g.turn)))return false;obligations.add(o.id);
   if(o.origin==='policy'&&(!Number.isInteger(o.card)||!cards[o.card]||!Number.isInteger(o.option)||!cards[o.card][2][o.option]))return false;
   const matches=g.queue.filter(q=>q.obligation===o.id);if(o.paid?matches.length!==0:matches.length!==1||matches[0].due!==o.due||matches[0].effect.money!==-o.amount)return false;
@@ -231,14 +231,15 @@ function validFinance(g){
    else{const cost={consult:6,research:7,audit:4}[e.key];if(!cost)return false;expectedCharges.push({turn:e.turn,amount:cost,kind:'admin'})}
   }
   if(e.kind==='loan'){expectedObligations+=2;for(let n=1;n<=2;n++)if(!f.obligations.some(o=>o.origin==='loan'&&o.sourceTurn===e.turn&&o.amount===9&&o.due===e.turn+n))return false}
+  if(e.kind==='settlement'&&e.fee>0)expectedCharges.push({turn:e.turn,amount:e.fee,kind:'financing'});
  }
- if(JSON.stringify(f.charges)!==JSON.stringify(expectedCharges)||f.obligations.filter(o=>o.origin!=='legacy').length!==expectedObligations)return false;
+ if(f.charges.length!==expectedCharges.length||f.charges.some((c,i)=>['turn','amount','kind'].some(k=>c[k]!==expectedCharges[i][k]))||f.obligations.filter(o=>o.origin!=='legacy').length!==expectedObligations)return false;
  return s.events.every(e=>{if(!e||!turn(e.turn)||e.turn>g.turn||!['policy','build','upgrade','admin','defer','settlement','consequence','milestone','loan','revise'].includes(e.kind))return false;
   if(e.kind==='policy')return Number.isInteger(e.card)&&!!cards[e.card]&&Number.isInteger(e.option)&&!!cards[e.card][2][e.option];
   if(['build','upgrade'].includes(e.kind))return !!builds[e.type]&&Number.isInteger(e.plot)&&e.plot>=0&&e.plot<9;
   if(e.kind==='admin')return ['consult','research','investment','audit','partnership','greenfund'].includes(e.key);
   if(e.kind==='milestone')return ['milestone4a','milestone4b','milestone8a','milestone8b','milestone12'].includes(e.key);
-  if(e.kind==='settlement')return ['airport','production','share'].every(k=>integer(e[k]));
+  if(e.kind==='settlement')return ['airport','production','share','fee'].every(k=>integer(e[k]));
   if(e.kind==='consequence')return (e.sourceTurn===null||turn(e.sourceTurn))&&(e.card===null||Number.isInteger(e.card)&&!!cards[e.card]&&Number.isInteger(e.option)&&!!cards[e.card][2][e.option]);
   return true;
  });
@@ -258,7 +259,7 @@ const F51={
  received:L('合格外資到款','Eligible equity received','Apports privés reçus','Ontvangen privaat kapitaal'),
  used:L('已投入專案','Allocated to projects','Affecté aux projets','Aan projecten besteed'),
  pending:L('未到期／待支付義務','Outstanding obligations','Obligations à payer','Nog te betalen verplichtingen'),
- scope:L('零公共負擔：建設自付、政策／行政支出及已簽約支付義務皆為零。日常營運收支不計；外資專款不能補回過去公款支出。','Zero public cost covers project co-payments, policy/administration costs and contracted payments. Routine operations are excluded. Private funds cannot erase earlier public payments.','La charge publique comprend les chantiers, politiques, frais de gestion et paiements contractuels. Le fonctionnement courant est exclu. Les fonds privés n’effacent pas les dépenses publiques passées.','Publieke lasten omvatten eigen projectbijdragen, beleid, bestuur en contractuele betalingen. Gewone exploitatie telt niet mee. Privaat geld wist eerdere publieke uitgaven niet uit.'),
+ scope:L('零公共負擔：建設自付、政策／行政支出、融資罰息及已簽約支付義務皆為零。日常營運收支不計；外資專款不能補回過去公款支出。','Zero public cost covers project co-payments, policy/administration costs, deficit fees and contracted payments. Routine operations are excluded. Private funds cannot erase earlier public payments.','La charge publique comprend les chantiers, politiques, frais de gestion, pénalités de déficit et paiements contractuels. Le fonctionnement courant est exclu. Les fonds privés n’effacent pas les dépenses publiques passées.','Publieke lasten omvatten eigen projectbijdragen, beleid, bestuur, tekortboetes en contractuele betalingen. Gewone exploitatie telt niet mee. Privaat geld wist eerdere publieke uitgaven niet uit.'),
  investment:L('創始招商','Founding investors','Investisseurs fondateurs','Startinvesteerders'),
  partnership:L('進駐企業共同投資','Tenant co-investment','Cofinancement des entreprises','Mede-investering huurders'),
  greenfund:L('綠色專案資金','Green project fund','Fonds de projets verts','Groen projectfonds'),
@@ -322,9 +323,11 @@ function adminCard51(k,a){const rule=financeRule(k),used=!!game.adminUsed[k],rea
  return '<button class="choice" data-v2="admin" data-type="'+k+'" '+(used||!ready?'disabled':'')+'><b>'+esc(am(k))+(used?' ('+esc(am('taken'))+')':'')+'</b><span class="v04-effect-row">'+v04Chips({money:-a.cost,private:rule?rule.amount:0,pop:a.pop,ai:a.ai,debt:a.debt,hype:a.hype},false)+'</span>'+(hint?'<span class="v51-condition">'+esc(hint)+'</span>':'')+'<small class="v04-choice-detail">'+(hint?esc(hint):eff({money:-a.cost,pop:a.pop,ai:a.ai,debt:a.debt}))+'</small></button>';
 }
 function financePanel51(){const f=game.finance,received=f.capital.reduce((n,c)=>n+c.amount,0),used=f.capital.reduce((n,c)=>n+c.used,0);
- const projects=f.projects.map(p=>'<li>'+esc(msg('round')+' '+p.turn+' · '+loc(builds[p.type].name)+' · '+ft('construction')+' '+p.cost+' · '+ft('equity')+' '+p.private+' · '+ft('public')+' '+p.public)+'</li>').join('');
+ const capital=f.capital.map(c=>'<li>'+esc(am(c.kind)+' · '+ft('received')+' '+c.amount+' · '+ft('available')+' '+(c.amount-c.used)+(c.kind==='greenfund'?' · '+ft('greenHelp'):''))+'</li>').join('');
+ const projects=f.projects.map(p=>'<li>'+esc(msg('round')+' '+p.turn+' · '+loc(builds[p.type].name)+' · '+ft('construction')+' '+p.cost+' · '+ft('equity')+' '+p.private+' · '+ft('public')+' '+p.public+(p.allocations.length?' · '+p.allocations.map(a=>am(a.capitalId)+' '+a.amount).join(' / '):''))+'</li>').join('');
+ const charges=f.charges.map(c=>{const source=game.story.events.find(e=>e.turn===c.turn&&e.kind===(c.kind==='admin'?'admin':'policy'));return '<li>'+esc(msg('round')+' '+c.turn+' · '+(c.kind==='financing'?msg('financing'):source?eventTitle51(source):ft('public'))+' · '+ft('public')+' '+c.amount)+'</li>'}).join('');
  const obligations=f.obligations.map(o=>'<li>'+esc((o.card!==null?loc(cards[o.card][0]):o.origin==='loan'?msg('recovery'):ft('unknown'))+' · '+ft('due')+' '+o.due+' · '+o.amount+' · '+ft(o.paid?'paid':'unpaid'))+'</li>').join('');
- return '<details class="v51-ledger"><summary>'+esc(ft('finance')+' · '+ft('available')+' '+(received-used)+' · '+ft('public')+' '+publicBurden())+'</summary>'+(f.legacy?'<p class="v51-notice">'+esc(ft('migration'))+'</p>':'')+'<p>'+esc(ft('scope'))+'</p><dl class="v51-totals">'+[[ft('received'),received],[ft('used'),used],[ft('available'),received-used],[ft('public'),publicBurden()],[ft('pending'),pendingBurden()]].map(([k,v])=>'<div><dt>'+esc(k)+'</dt><dd>'+v+'</dd></div>').join('')+'</dl>'+(f.share?'<p>'+esc(ft('tenantHelp'))+'</p>':'')+'<ol class="v51-entries">'+(projects||'<li>'+esc(ft('noProjects'))+'</li>')+obligations+'</ol></details>';
+ return '<details class="v51-ledger"><summary>'+esc(ft('finance')+' · '+ft('available')+' '+(received-used)+' · '+ft('public')+' '+publicBurden()+(f.legacy?' · '+ft('unknown'):''))+'</summary>'+(f.legacy?'<p class="v51-notice">'+esc(ft('migration'))+'</p>':'')+'<p>'+esc(ft('scope'))+'</p><dl class="v51-totals">'+[[ft('received'),received],[ft('used'),used],[ft('available'),received-used],[ft('public'),publicBurden()],[ft('pending'),pendingBurden()]].map(([k,v])=>'<div><dt>'+esc(k)+'</dt><dd>'+v+'</dd></div>').join('')+'</dl>'+(f.share?'<p>'+esc(ft('tenantHelp'))+'</p>':'')+'<ol class="v51-entries">'+capital+(projects||'<li>'+esc(ft('noProjects'))+'</li>')+charges+obligations+'</ol></details>';
 }
 function storyReaction51(e){
  if(e.kind==='policy'){
@@ -402,8 +405,8 @@ function doSettle(g){
  if(g.phase!=='settle')return false;const m=metrics(g),short=m.demand>m.supply,produced=short?Math.floor(m.ai/2):m.ai,share=investorShare(g,produced);
  g.lost+=8-m.airport;g.aiValue+=produced;apply(g,{money:m.airport+m.biz+Math.floor(produced/3)-share-4,ai:produced,pop:(short?-3:0)+(g.debt>=6?-2:0)});
  for(const q of g.queue.filter(q=>q.due===g.turn)){apply(g,q.effect);if(q.obligation)g.finance.obligations.find(o=>o.id===q.obligation).paid=true;remember(g,{kind:'consequence',card:q.card??null,option:q.option??null,sourceTurn:q.sourceTurn??null})}
- g.queue=g.queue.filter(q=>q.due>g.turn);let fee=0,penalty=0;if(g.money<0){fee=3;g.money-=fee;g.deficit++;g.distressTurns++;if(g.deficit>=2){penalty=3;apply(g,{pop:-3})}}else g.deficit=0;
- g.log.unshift({turn:g.turn,kind:'settlement',airport:m.airport,production:produced,fee,penalty});remember(g,{kind:'settlement',airport:m.airport,production:produced,share});milestone(g);g.log=g.log.slice(0,8);
+ g.queue=g.queue.filter(q=>q.due>g.turn);let fee=0,penalty=0;if(g.money<0){fee=3;g.money-=fee;publicCharge(g,fee,'financing');g.deficit++;g.distressTurns++;if(g.deficit>=2){penalty=3;apply(g,{pop:-3})}}else g.deficit=0;
+ g.log.unshift({turn:g.turn,kind:'settlement',airport:m.airport,production:produced,fee,penalty});remember(g,{kind:'settlement',airport:m.airport,production:produced,share,fee});milestone(g);g.log=g.log.slice(0,8);
  if(g.turn===12){g.finished=true;g.phase='done'}else{g.turn++;g.phase='policy'}return true;
 }
 function preview(g,index){let copy={...g,tiles:g.tiles.map(t=>({...t}))};copy.tiles[index]={type:'lab',traffic:0};return metrics(copy)}
@@ -456,10 +459,10 @@ function promiseAudit(){
   const rows=[
     [t.jobs,t.measureJobs+': '+game.ai+'/50',v[0]],
     [t.climate,t.measureClimate+': '+m.parks+'/2; '+t.grid+' '+(m.supply-m.demand),v[1]],
-    [t.public,ft('public')+': '+publicBurden()+'; '+ft('pending')+': '+pendingBurden()+(game.finance.legacy?' · '+ft('unknown'):''),v[2]]
+    [t.public,ft('public')+': '+publicBurden()+'; '+ft('pending')+': '+pendingBurden(),game.finance.legacy?null:v[2]]
   ];
   return '<section class="audit"><h3>'+t.audit+'</h3><p class="hint">'+t.proxy+'</p>'+
-    rows.map(x=>'<div class="audit-row"><b>'+x[0]+'</b><span>'+x[1]+'</span><strong>'+msg(x[2]?'yes':'no')+'</strong></div>').join('')+'</section>';
+    rows.map(x=>'<div class="audit-row"><b>'+x[0]+'</b><span>'+x[1]+'</span><strong>'+(x[2]===null?ft('unknown'):msg(x[2]?'yes':'no'))+'</strong></div>').join('')+'</section>';
 }
 
 /* v0.4 presentation helpers; no mutation of the economy/state. */

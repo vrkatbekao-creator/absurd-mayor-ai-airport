@@ -52,27 +52,26 @@ function('doSettle', """function doSettle(g){
  if(g.phase!=='settle')return false;const m=metrics(g),short=m.demand>m.supply,produced=short?Math.floor(m.ai/2):m.ai,share=investorShare(g,produced);
  g.lost+=8-m.airport;g.aiValue+=produced;apply(g,{money:m.airport+m.biz+Math.floor(produced/3)-share-4,ai:produced,pop:(short?-3:0)+(g.debt>=6?-2:0)});
  for(const q of g.queue.filter(q=>q.due===g.turn)){apply(g,q.effect);if(q.obligation)g.finance.obligations.find(o=>o.id===q.obligation).paid=true;remember(g,{kind:'consequence',card:q.card??null,option:q.option??null,sourceTurn:q.sourceTurn??null})}
- g.queue=g.queue.filter(q=>q.due>g.turn);let fee=0,penalty=0;if(g.money<0){fee=3;g.money-=fee;g.deficit++;g.distressTurns++;if(g.deficit>=2){penalty=3;apply(g,{pop:-3})}}else g.deficit=0;
- g.log.unshift({turn:g.turn,kind:'settlement',airport:m.airport,production:produced,fee,penalty});remember(g,{kind:'settlement',airport:m.airport,production:produced,share});milestone(g);g.log=g.log.slice(0,8);
+ g.queue=g.queue.filter(q=>q.due>g.turn);let fee=0,penalty=0;if(g.money<0){fee=3;g.money-=fee;publicCharge(g,fee,'financing');g.deficit++;g.distressTurns++;if(g.deficit>=2){penalty=3;apply(g,{pop:-3})}}else g.deficit=0;
+ g.log.unshift({turn:g.turn,kind:'settlement',airport:m.airport,production:produced,fee,penalty});remember(g,{kind:'settlement',airport:m.airport,production:produced,share,fee});milestone(g);g.log=g.log.slice(0,8);
  if(g.turn===12){g.finished=true;g.phase='done'}else{g.turn++;g.phase='policy'}return true;
 }""")
 replace("if(a==='loan'&&!game.loan&&!game.finished){game.loan=true;apply(game,{money:15,debt:2});game.queue.push({due:game.turn+1,effect:{money:-9}},{due:game.turn+2,effect:{money:-9}})}", "if(a==='loan')takeLoan(game);")
 replace("game.revised=true;apply(game,{pop:-4,debt:-2})", "game.revised=true;apply(game,{pop:-4,debt:-2});remember(game,{kind:'revise'})")
-replace("const admins=Object.entries(municipal).map(([k,a])=>", "const admins=Object.entries(municipal).map(([k,a])=>") # anchor verification
 start = s.index('const admins=Object.entries(municipal).map(')
 end = s.index('\n', start)
 s=s[:start]+"const admins=Object.entries(municipal).map(([k,a])=>adminCard51(k,a)).join('');"+s[end:]
-replace("[t.public,t.measurePublic+': '+game.spent+'; '+msg('private')+': '+game.private,v[2]]", "[t.public,ft('public')+': '+publicBurden()+'; '+ft('pending')+': '+pendingBurden()+(game.finance.legacy?' · '+ft('unknown'):''),v[2]]")
+replace("[t.public,t.measurePublic+': '+game.spent+'; '+msg('private')+': '+game.private,v[2]]", "[t.public,ft('public')+': '+publicBurden()+'; '+ft('pending')+': '+pendingBurden(),game.finance.legacy?null:v[2]]")
+replace("msg(x[2]?'yes':'no')", "(x[2]===null?ft('unknown'):msg(x[2]?'yes':'no'))")
 replace("${v041Badge('💰',V041_LABELS[lang].cost,'−'+b.cost,true)}", "${v041Badge('💰',V041_LABELS[lang].cost,b.cost,false)}${fundingChips(game,k,b.cost)}")
 replace("${v041Badge('💰',V041_LABELS[lang].cost,'−'+Math.max(5,Math.ceil(builds[tile.type].cost*.6)),true)}", "${v041Badge('💰',V041_LABELS[lang].cost,Math.max(5,Math.ceil(builds[tile.type].cost*.6)),false)}${fundingChips(game,tile.type,Math.max(5,Math.ceil(builds[tile.type].cost*.6)))}")
 replace('persist();if(game.finished)showEnd()}', 'renderV51();persist();if(game.finished)showEnd()}')
 replace('${promiseAudit()}<p>${msg(\'endHelp\')}</p>', '${epilogue51()}${promiseAudit()}${financePanel51()}${storyPanel51()}<p>${msg(\'endHelp\')}</p>')
 replace("${msg(p[2]?'yes':'no')}", "${game.finance.legacy?ft('unknown'):msg(p[2]?'yes':'no')}")
-replace("publicCost:publicBurden()", "publicCost:publicBurden()") if 'publicCost:publicBurden()' in s else None
 replace('power:m.supply-m.demand}}', 'power:m.supply-m.demand,private:game.private,publicCost:publicBurden()}}')
 replace("changes=['money','pop','ai','hype','debt','traffic','power']", "changes=['money','pop','ai','hype','debt','traffic','power','private','publicCost']")
 replace("drawV2();if(!game.finished&&game.turn===1&&game.phase==='policy')showIntro(notice);", "mountV51();drawV2();if(!game.finished&&game.turn===1&&game.phase==='policy')showIntro(notice);")
 style=(root/'assets/v51.css').read_text(encoding='utf-8')
 replace('</style>', '\n'+style+'\n</style>')
-(root/'荒謬市長_v5.1.html').write_text(s,encoding='utf-8')
+(root/'荒謬市長_v5.1.html').write_bytes(s.encode('utf-8'))
 print('Built offline V5.1:',len(s.encode('utf-8')),'bytes')

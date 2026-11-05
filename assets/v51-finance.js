@@ -50,7 +50,7 @@ function validFinance(g){
   let sum=0;const seen=new Set();for(const a of p.allocations){const c=f.capital.find(c=>c.id===a.capitalId);if(!c||c.turn>p.turn||!capitalEligible(c,p.type)||!integer(a.amount)||a.amount===0||seen.has(c.id))return false;seen.add(c.id);sum+=a.amount;used.set(c.id,used.get(c.id)+a.amount)}if(sum!==p.private)return false;
  }
  if(f.capital.some(c=>used.get(c.id)!==c.used)||g.spent!==f.legacySpent+f.projects.reduce((n,p)=>n+p.cost,0)||g.private!==f.legacyPrivate+f.capital.reduce((n,c)=>n+c.amount,0)||f.share!==f.capital.some(c=>c.kind==='partnership'))return false;
- for(const c of f.charges)if(!turn(c.turn)||c.turn>g.turn||!integer(c.amount)||c.amount===0||!['policy','admin'].includes(c.kind))return false;
+ for(const c of f.charges)if(!turn(c.turn)||c.turn>g.turn||!integer(c.amount)||c.amount===0||!['policy','admin','financing'].includes(c.kind))return false;
  const obligations=new Set();for(const o of f.obligations){if(typeof o.id!=='string'||obligations.has(o.id)||!integer(o.amount)||!o.amount||!Number.isInteger(o.due)||o.due<1||o.due>15||!['policy','loan','legacy'].includes(o.origin)||typeof o.paid!=='boolean'||(o.sourceTurn!==null&&(!turn(o.sourceTurn)||o.sourceTurn>g.turn)))return false;obligations.add(o.id);
   if(o.origin==='policy'&&(!Number.isInteger(o.card)||!cards[o.card]||!Number.isInteger(o.option)||!cards[o.card][2][o.option]))return false;
   const matches=g.queue.filter(q=>q.obligation===o.id);if(o.paid?matches.length!==0:matches.length!==1||matches[0].due!==o.due||matches[0].effect.money!==-o.amount)return false;
@@ -68,14 +68,15 @@ function validFinance(g){
    else{const cost={consult:6,research:7,audit:4}[e.key];if(!cost)return false;expectedCharges.push({turn:e.turn,amount:cost,kind:'admin'})}
   }
   if(e.kind==='loan'){expectedObligations+=2;for(let n=1;n<=2;n++)if(!f.obligations.some(o=>o.origin==='loan'&&o.sourceTurn===e.turn&&o.amount===9&&o.due===e.turn+n))return false}
+  if(e.kind==='settlement'&&e.fee>0)expectedCharges.push({turn:e.turn,amount:e.fee,kind:'financing'});
  }
- if(JSON.stringify(f.charges)!==JSON.stringify(expectedCharges)||f.obligations.filter(o=>o.origin!=='legacy').length!==expectedObligations)return false;
+ if(f.charges.length!==expectedCharges.length||f.charges.some((c,i)=>['turn','amount','kind'].some(k=>c[k]!==expectedCharges[i][k]))||f.obligations.filter(o=>o.origin!=='legacy').length!==expectedObligations)return false;
  return s.events.every(e=>{if(!e||!turn(e.turn)||e.turn>g.turn||!['policy','build','upgrade','admin','defer','settlement','consequence','milestone','loan','revise'].includes(e.kind))return false;
   if(e.kind==='policy')return Number.isInteger(e.card)&&!!cards[e.card]&&Number.isInteger(e.option)&&!!cards[e.card][2][e.option];
   if(['build','upgrade'].includes(e.kind))return !!builds[e.type]&&Number.isInteger(e.plot)&&e.plot>=0&&e.plot<9;
   if(e.kind==='admin')return ['consult','research','investment','audit','partnership','greenfund'].includes(e.key);
   if(e.kind==='milestone')return ['milestone4a','milestone4b','milestone8a','milestone8b','milestone12'].includes(e.key);
-  if(e.kind==='settlement')return ['airport','production','share'].every(k=>integer(e[k]));
+  if(e.kind==='settlement')return ['airport','production','share','fee'].every(k=>integer(e[k]));
   if(e.kind==='consequence')return (e.sourceTurn===null||turn(e.sourceTurn))&&(e.card===null||Number.isInteger(e.card)&&!!cards[e.card]&&Number.isInteger(e.option)&&!!cards[e.card][2][e.option]);
   return true;
  });

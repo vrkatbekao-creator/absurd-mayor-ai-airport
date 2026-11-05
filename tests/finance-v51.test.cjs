@@ -66,9 +66,30 @@ test('narrative chains preserve source turns and do not alter economic state',()
  const callbacks=g.story.events.filter(e=>e.kind==='consequence');assert.ok(callbacks.some(e=>e.card===7&&e.sourceTurn===1&&e.turn===3));assert.ok(callbacks.some(e=>e.card===2&&e.sourceTurn===2&&e.turn===4));
  const before=JSON.stringify(g);for(const e of g.story.events){api.storyReaction51(e);api.eventTitle51(e);api.source51(e)}api.epilogue51();assert.equal(JSON.stringify(g),before);assert.equal(api.valid(g),true);
 });
-test('all five existing ending predicates remain reachable and four languages share story keys',()=>{
+test('all five existing ending predicates classify correctly and four languages share story keys',()=>{
  const {api,g,ctx}=buildState();const vm=require('node:vm');api.configureV51();
  for(const lang of ['zh','en','fr','nl']){vm.runInContext('lang='+JSON.stringify(lang),ctx);for(const [key,value] of Object.entries(api.F51))assert.ok(value[lang],key+' '+lang);assert.ok(api.epilogue51().length>100)}
  assert.equal(api.endingKey(g),'airport');g.hype=90;assert.equal(api.endingKey(g),'ppt');g.tiles[0]={...g.tiles[0],type:'data',level:2,traffic:0};g.tiles[4]={...g.tiles[4],type:'data',level:2,traffic:0};assert.equal(api.endingKey(g),'heater');
  g.tiles[0].type='lab';g.tiles[4].type='lab';g.ai=60;g.aiValue=100;g.debt=0;assert.equal(api.endingKey(g),'miracle');g.ai=0;g.tiles[0].type=g.tiles[4].type=g.tiles[6].type='park';assert.equal(api.endingKey(g),'pigeon');
+});
+test('deficit financing fees count as public cost and cannot be removed from the ledger',()=>{
+ const {api,g}=buildState();g.money=-10;api.deferAction(g);api.doSettle(g);assert.equal(api.publicBurden(g),3);assert.equal(api.valid(g),true);
+ const copy=JSON.parse(JSON.stringify(g));copy.finance.charges=[];assert.equal(api.valid(copy),false);
+});
+test('investors receive only a share of actual AI cash income, with no treasury guarantee',()=>{
+ const {api,g}=buildState();g.ai=4;api.administration(g,'partnership');api.doSettle(g);assert.equal(g.story.events.find(e=>e.kind==='settlement').share,0);
+ g.phase='build';api.develop(g,0,'lab');api.doSettle(g);const e=g.story.events.filter(e=>e.kind==='settlement').at(-1);assert.equal(e.production,4);assert.equal(e.share,0);
+ const route=play();assert.ok(route.g.story.events.some(e=>e.kind==='settlement'&&e.production===8&&e.share===1));
+});
+test('five complete twelve-turn playthroughs reach the five ending classes with valid save roundtrips',()=>{
+ const targets=['heater','pigeon','ppt','airport','miracle'];
+ for(const target of targets){if(target==='miracle'){const {env,g}=play();assert.equal(env.api.endingKey(g),target);continue}
+  const {api}=environment({},41);let g=api.game;
+  for(let n=1;n<=12;n++){
+   const opts=api.cards[g.order[g.turn-1]][2];const option=target==='ppt'?opts.map((o,i)=>({i,h:o[2].hype||0})).sort((a,b)=>b.h-a.h)[0].i:require('./v51-engine.cjs').safePolicy(api,g);api.choosePolicy(g,option);
+   if(target==='heater'&&n<=2)api.develop(g,n===1?0:4,'data');else if(target==='heater'&&n===3)api.upgrade(g,0);else if(target==='pigeon'&&n<=3)api.develop(g,[0,4,6][n-1],'park');else if(target==='ppt'&&n===1)api.develop(g,0,'show');else api.deferAction(g);
+   api.doSettle(g);g=JSON.parse(JSON.stringify(g));assert.equal(api.valid(g),true,target+' turn '+n);
+  }
+  assert.equal(api.endingKey(g),target);
+ }
 });
