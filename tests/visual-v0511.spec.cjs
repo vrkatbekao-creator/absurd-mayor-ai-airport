@@ -66,5 +66,5 @@ for(const lang of ['zh','en','fr','nl'])test('loan cost, principal and repayment
  await page.locator('#v51-ledger-host summary').click();await expect(page.locator('#v51-ledger-host .v51-totals div')).toHaveCount(6);await noOverflow(page);await capture(page,info,'loan-accounting-'+lang);
  const before=s.game;await page.reload();expect((await state(page)).game).toEqual(before);await page.locator('[data-v2="settle"]').click();
  await safePolicy(page);await page.locator('[data-tab="defer"]').click();await page.locator('[data-v2="defer"]:visible').click();await page.locator('[data-v2="settle"]').click();expect(await page.evaluate(()=>pendingPrincipal51())).toBe(8);expect((await state(page)).public).toBe(9);
- await page.reload();expect((await state(page)).pending).toBe(9);expect(errors).toEqual([]);
+ await page.reload();expect((await state(page)).pending).toBe(9);await expect(page.locator('#v51-ledger-host .v51-entries')).toContainText(await page.evaluate(()=>ft('principalPart')+' 7'));expect(errors).toEqual([]);
 });
