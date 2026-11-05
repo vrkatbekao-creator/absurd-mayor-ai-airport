@@ -41,4 +41,4 @@ V0.5.1 使用獨立存檔鍵，不覆寫 V0.5.0；舊檔只在同一儲存空間
 
 版本號更正：原誤標 V5.0／V5.1，正式版本為 V0.5.0／V0.5.1。舊檔名 v5.0／v5.1 保留為相容入口；新下載請用 v0.5.0／v0.5.1。存檔鍵與存檔資料版本不隨產品版本改名。
 
-V0.5.1.1 候選版：[離線遊戲](荒謬市長_v0.5.1.1.html)。分開呈現公共成本、待付現金與借款本金，並完成五路線配對比較；見 [策略複核](BALANCE_REPORT_v0.5.1.1.md)、[QA](QA_REPORT_v0.5.1.1.md) 與 [PR #20](https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/pull/20)。
+已合併的 V0.5.1.1：[離線遊戲](荒謬市長_v0.5.1.1.html)。分開呈現公共成本、待付現金與借款本金，並完成五路線配對比較；見 [策略複核](BALANCE_REPORT_v0.5.1.1.md)、[QA](QA_REPORT_v0.5.1.1.md) 與 [PR #20](https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/pull/20)。

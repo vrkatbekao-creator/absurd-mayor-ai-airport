@@ -52,13 +52,18 @@ jobs:
         with:
           node-version: '22'
       - run: npm install --no-save --package-lock=false @playwright/test@1.56.1
-      - name: Install browser with bounded retries
+      - name: Install system dependencies without orphaning package-manager locks
+        timeout-minutes: 7
+        run: |
+          printf 'Acquire::Retries "2";\nAcquire::http::Timeout "20";\nAcquire::https::Timeout "20";\nDPkg::Lock::Timeout "60";\n' | sudo tee /etc/apt/apt.conf.d/80mayor-ci
+          npx playwright install-deps ${{ matrix.browser }}
+      - name: Download browser with bounded retries
         timeout-minutes: 7
         env:
           PLAYWRIGHT_DOWNLOAD_CONNECTION_TIMEOUT: '60000'
         run: |
           for attempt in 1 2 3; do
-            if timeout 120s npx playwright install --with-deps ${{ matrix.browser }}; then exit 0; fi
+            if timeout 120s npx playwright install ${{ matrix.browser }}; then exit 0; fi
           done
           exit 1
       - name: Enable headless audio output
