@@ -4,7 +4,7 @@ const { pathToFileURL } = require('node:url');
 const { mkdirSync } = require('node:fs');
 const path = require('node:path');
 
-const gameUrl = pathToFileURL(path.resolve(__dirname, '../荒謬市長_v5.0.html')).href;
+const gameUrl = pathToFileURL(path.resolve(__dirname, '../荒謬市長_v0.5.0.html')).href;
 const screenDir = path.resolve(__dirname, '../artifacts/v5-screenshots');
 const sizes = [
   { name: 'desktop-1440', width: 1440, height: 900 },
@@ -365,7 +365,7 @@ for (const language of languages) test('city art, states and reduced motion '+la
 
 test('v0.4.2 save loads unchanged and identical decisions produce identical state',async({browser})=>{
  const states=[];
- for(const version of ['0.4.2','5.0']){
+ for(const version of ['0.4.2','0.5.0']){
   const context=await browser.newContext();const page=await context.newPage();
   await page.addInitScript(()=>{let seed=41;Math.random=()=>((seed=seed*16807%2147483647)-1)/2147483646});
   await page.goto(pathToFileURL(path.resolve(__dirname,'../荒謬市長_v'+version+'.html')).href);

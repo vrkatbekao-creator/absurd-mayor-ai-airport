@@ -1,10 +1,10 @@
 /* Audio preferences are separate from the version-2 game save. */
 (() => {
  const key='absurd-mayor-audio-settings-v1',labels={
-  zh:{loading:'正在啟用配樂…',play:'播放配樂',pause:'暫停配樂',volume:'音量',on:'配樂已播放',off:'配樂已暫停',error:'此瀏覽器暫時無法播放配樂',title:'V5.0 · 城市向前 — 原創競選配樂'},
-  en:{loading:'Starting music…',play:'Play music',pause:'Pause music',volume:'Volume',on:'Music playing',off:'Music paused',error:'Music is unavailable in this browser',title:'V5.0 · City on the Move — original campaign music'},
-  fr:{loading:'Activation…',play:'Activer la musique',pause:'Mettre en pause',volume:'Volume',on:'Musique activée',off:'Musique en pause',error:'La musique est indisponible dans ce navigateur',title:'V5.0 · En avant, la ville — musique de campagne originale'},
-  nl:{loading:'Muziek starten…',play:'Muziek afspelen',pause:'Muziek pauzeren',volume:'Volume',on:'Muziek speelt',off:'Muziek gepauzeerd',error:'Muziek is niet beschikbaar in deze browser',title:'V5.0 · De stad vooruit — originele campagnemuziek'}
+  zh:{loading:'正在啟用配樂…',play:'播放配樂',pause:'暫停配樂',volume:'音量',on:'配樂已播放',off:'配樂已暫停',error:'此瀏覽器暫時無法播放配樂',title:'V0.5.0 · 城市向前 — 原創競選配樂'},
+  en:{loading:'Starting music…',play:'Play music',pause:'Pause music',volume:'Volume',on:'Music playing',off:'Music paused',error:'Music is unavailable in this browser',title:'V0.5.0 · City on the Move — original campaign music'},
+  fr:{loading:'Activation…',play:'Activer la musique',pause:'Mettre en pause',volume:'Volume',on:'Musique activée',off:'Musique en pause',error:'La musique est indisponible dans ce navigateur',title:'V0.5.0 · En avant, la ville — musique de campagne originale'},
+  nl:{loading:'Muziek starten…',play:'Muziek afspelen',pause:'Muziek pauzeren',volume:'Volume',on:'Muziek speelt',off:'Muziek gepauzeerd',error:'Muziek is niet beschikbaar in deze browser',title:'V0.5.0 · De stad vooruit — originele campagnemuziek'}
  };
  let volume=28;try{const p=JSON.parse(localStorage.getItem(key));if(Number.isFinite(p?.volume))volume=Math.max(0,Math.min(100,p.volume))}catch(_){}
  let mix=null,wanted=false,ready=false,timer=null,epoch=0,index=0,loop=0,error=false;const score=MayorScore.plan();

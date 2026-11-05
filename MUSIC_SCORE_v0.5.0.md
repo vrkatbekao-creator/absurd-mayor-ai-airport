@@ -1,4 +1,4 @@
-# V5.0 — City on the Move / 城市向前
+# V0.5.0 — City on the Move / 城市向前
 
 An original instrumental background score: 120 BPM, D major, 4/4, 32 bars, a 64-second loop. The mood combines bright urban optimism with a forward-moving campaign rally. It uses newly composed material; no recordings, samples, lyrics or melodies from the referenced songs are included.
 
@@ -15,7 +15,7 @@ The preview is rendered from the same score and synthesis used by the game, rath
 
 Local Chrome: 30 passed, including the inherited four-language/three-size matrix, full playthrough, save equality, audio controls in four languages, unsupported-audio fallback, rapid toggles, visibility suspension, ending-dialog pause and representative rendered PCM at the loop junction. These signal checks do not replace the user's artistic listening judgement. A full manual screen-reader and device speaker/headphone audit has not been performed.
 
-The GitHub PR records the exact final CI head and all Chromium/Firefox/WebKit results. V5.0 is the version label requested for this music addition; game save version 2 and previous game files are preserved.
+The GitHub PR records the exact final CI head and all Chromium/Firefox/WebKit results. V0.5.0 is the version label requested for this music addition; game save version 2 and previous game files are preserved.
 
 
 ## Initial CI finding and correction
