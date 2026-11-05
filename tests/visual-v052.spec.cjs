@@ -59,6 +59,7 @@ test('legacy import is conservative, explicit and leaves V0.5.0 untouched',async
 test('reduced motion and accessible disclosure names survive language switching',async({page})=>{
  await page.emulateMedia({reducedMotion:'reduce'});await start(page);await safePolicy(page);await page.locator('[data-v2="action-tab"][data-tab="admin"]').click();for(const lang of ['en','fr','nl','zh']){await page.locator('.lang select').selectOption(lang);await expect(page.locator('#v51-ledger-host summary')).toHaveAccessibleName(/.+/);for(const summary of await page.locator('.v041-card summary').all())await expect(summary).toHaveAccessibleName(/.+/)}
  const animations=await page.locator('.v042-scene').first().evaluate(e=>getComputedStyle(e).animationName);expect(animations).toBe('none');
+ await page.evaluate(()=>{window.qaMutations=0;window.qaObserver=new MutationObserver(ms=>qaMutations+=ms.length);qaObserver.observe(document.getElementById('v042-feedback'),{subtree:true,childList:true,characterData:true})});await page.locator('[data-v2="tile"][data-index="0"]').click();await page.locator('[data-v2="tile"][data-index="7"]').click();expect(await page.evaluate(()=>qaMutations)).toBe(0);await expect(page.locator('#v042-feedback')).toHaveAttribute('aria-atomic','true');
 });
 for(const lang of ['zh','en','fr','nl'])test('loan cost, principal and repayment remain distinct '+lang,async({page},info)=>{
  await page.setViewportSize({width:390,height:844});const errors=[];page.on('pageerror',e=>errors.push(String(e)));await start(page,lang);await expect(page.locator('h1')).toContainText('V0.5.2');await safePolicy(page);
@@ -80,12 +81,15 @@ for(const width of [390,1024,1440])for(const lang of ['zh','en','fr','nl'])test(
   if(n===4||n===8){expect(await page.evaluate(()=>{const e=game.story.events.find(e=>e.kind==='milestone'&&e.turn===(game.turn-1));return milestoneText52(game,e)})).toContain(await page.evaluate(n=>nt(n===4?'m4Coexist':'m8Working'),n));await page.reload();expect((await state(page)).game).toEqual(s.game)}
  }
  expect((await state(page)).pledges).toEqual([true,true,true]);await expect(page.locator('#endtitle')).toBeFocused();await expect(page.locator('[data-industry="coexist"]')).toBeVisible();await expect(page.locator('[data-politics="retained"]')).toBeVisible();await expect(page.locator('.v052-voices [data-character]')).toHaveCount(4);expect(await page.evaluate(()=>endingKey())).toBe('airport');
+ const hero=await page.locator('.v04-end-illustration').evaluate(e=>{const a=e.querySelector('.scene-emoji').getBoundingClientRect(),b=e.querySelector('div').getBoundingClientRect();return {iconRight:a.right,textLeft:b.left}});expect(hero.iconRight).toBeLessThanOrEqual(hero.textLeft);
  await expect(page.locator('[data-character="reporter"]')).toContainText(await page.evaluate(()=>nt('reporterCoexist')));await noOverflow(page);
  // Viewport captures respect the fixed scrollable dialog. Element screenshots of an
  // over-height dialog can otherwise include the page hidden behind it.
  const modal=page.locator('#modal .modal');await modal.evaluate(e=>e.scrollTop=0);await page.screenshot({path:path.join(root,info.project.name,'coexist-top-'+width+'-'+lang+'.png')});
  await page.locator('.v052-voices').evaluate(e=>e.scrollIntoView({block:'start'}));await page.screenshot({path:path.join(root,info.project.name,'coexist-voices-'+width+'-'+lang+'.png')});
- await expect(page.locator('#v052-assessment-title')).toHaveAccessibleName(/.+/);const before=(await state(page)).game;await page.reload();expect((await state(page)).game).toEqual(before);
+ await expect(page.locator('#v052-assessment-title')).toHaveAccessibleName(/.+/);const before=(await state(page)).game;
+ const focusable=page.locator('#modal button:not([disabled]),#modal summary,#modal input:not([disabled])');await focusable.last().focus();await page.keyboard.press('Tab');await expect(focusable.first()).toBeFocused();await page.keyboard.press('Shift+Tab');await expect(focusable.last()).toBeFocused();
+ const disclosure=page.locator('#modal .v51-ledger summary');await expect(disclosure).toHaveAccessibleName(/.+/);await disclosure.focus();await page.keyboard.press('Enter');await expect(page.locator('#modal .v51-ledger')).toHaveAttribute('open','');expect((await state(page)).game).toEqual(before);expect(await page.locator('.v052-assessment').ariaSnapshot()).toContain('heading');await page.reload();expect((await state(page)).game).toEqual(before);
  expect(errors).toEqual([]);
 });
 

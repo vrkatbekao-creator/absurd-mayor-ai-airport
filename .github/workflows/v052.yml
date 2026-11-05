@@ -25,6 +25,15 @@ jobs:
           git diff --exit-code -- 荒謬市長_v0.5.2.html
       - run: node --test tests/finance-v052.test.cjs tests/startup-v052.test.cjs tests/narrative-v052.test.cjs
       - run: node scripts/regression-v052.cjs --seeds=2000
+      - name: Match recorded regression and preserve released HTML
+        run: |
+          node - <<'JS'
+          const fs=require('node:fs'),assert=require('node:assert/strict'),crypto=require('node:crypto');
+          assert.deepEqual(JSON.parse(fs.readFileSync('artifacts/regression-v0.5.2.json')),JSON.parse(fs.readFileSync('qa/regression-v0.5.2.json')));
+          for(const [version,sha] of Object.entries({'0.5.0':'8385e6e93929c68272dcf8c263a3caa0c4b0d825','0.5.1':'5b52a81fd437a5151702c7b44b7151ab116f80f6','0.5.1.1':'0b102f7eeaf496666a8c068688c77ad05497dd88'})){
+            const bytes=fs.readFileSync('荒謬市長_v'+version+'.html');assert.equal(crypto.createHash('sha1').update('blob '+bytes.length+'\0').update(bytes).digest('hex'),sha,version);
+          }
+          JS
       - uses: actions/upload-artifact@v4
         if: always()
         with:
