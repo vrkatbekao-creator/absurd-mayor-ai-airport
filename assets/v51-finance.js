@@ -43,7 +43,7 @@ function migrateV50(v){
 function validFinance(g){
  const f=g.finance,integer=n=>Number.isSafeInteger(n)&&n>=0,turn=n=>Number.isInteger(n)&&n>=1&&n<=12;
  if(!f||f.version!==1||typeof f.legacy!=='boolean'||typeof f.share!=='boolean'||!integer(f.legacySpent)||!integer(f.legacyPrivate)||!['capital','projects','charges','obligations'].every(k=>Array.isArray(f[k])))return false;
- if(f.capital.length>3||f.projects.length>12||f.charges.length>24||f.obligations.length>16||(!f.legacy&&(f.legacySpent||f.legacyPrivate)))return false;
+ if(f.capital.length>3||f.projects.length>12||f.charges.length>27||f.obligations.length>16||(!f.legacy&&(f.legacySpent||f.legacyPrivate)))return false;
  const ids=new Set(),used=new Map();
  for(const c of f.capital){const r=financeRule(c.kind);if(!r||c.id!==c.kind||ids.has(c.id)||!turn(c.turn)||c.turn>g.turn||c.amount!==r.amount||!integer(c.used)||c.used>c.amount||!g.adminUsed[c.kind])return false;ids.add(c.id);used.set(c.id,0)}
  for(const p of f.projects){if(!turn(p.turn)||p.turn>g.turn||!['build','upgrade'].includes(p.kind)||!Number.isInteger(p.plot)||p.plot<0||p.plot>8||!builds[p.type]||!integer(p.cost)||!integer(p.private)||!integer(p.public)||p.cost!==p.private+p.public||p.cost!==(p.kind==='build'?builds[p.type].cost:Math.max(5,Math.ceil(builds[p.type].cost*.6)))||!Array.isArray(p.allocations))return false;

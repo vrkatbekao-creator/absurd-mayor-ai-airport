@@ -93,3 +93,12 @@ test('five complete twelve-turn playthroughs reach the five ending classes with 
   assert.equal(api.endingKey(g),target);
  }
 });
+test('high-spending failed strategies keep valid saves with more than 24 public charge entries',()=>{
+ const {api}=environment({},16);let g=api.game;
+ for(let n=1;n<=12;n++){
+  const options=api.cards[g.order[g.turn-1]][2];const option=options.map((o,i)=>({i,c:-(o[2].money||0)})).sort((a,b)=>b.c-a.c)[0].i;api.choosePolicy(g,option);
+  if(n<=2)api.develop(g,n,'data');else if(n<=5)api.administration(g,['consult','research','audit'][n-3]);else if(n<=11)api.develop(g,[0,3,4,6,7,8][n-6],'data');else api.upgrade(g,1);
+  api.doSettle(g);g=JSON.parse(JSON.stringify(g));assert.equal(api.valid(g),true,'turn '+n);
+ }
+ assert.equal(g.finance.charges.length,25);assert.ok(g.money<0);assert.equal(api.promises(g)[2],false);
+});
