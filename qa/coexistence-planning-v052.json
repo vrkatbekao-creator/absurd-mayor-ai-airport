@@ -1,0 +1,68 @@
+{
+  "version": "0.5.1.1",
+  "scope": "Planning probe: one airport/AI coexistence route, 2000 seeded policy orders with safe-policy selector; not optimal-strategy coverage.",
+  "route": [
+    [
+      "admin",
+      "investment"
+    ],
+    [
+      "build",
+      7,
+      "lab"
+    ],
+    [
+      "admin",
+      "partnership"
+    ],
+    [
+      "build",
+      6,
+      "park"
+    ],
+    [
+      "build",
+      8,
+      "park"
+    ],
+    [
+      "upgrade",
+      7
+    ]
+  ],
+  "games": 2000,
+  "allPromises": 2000,
+  "means": {
+    "money": 138.395,
+    "pop": 44.1355,
+    "ai": 61.206,
+    "publicCost": 0,
+    "traffic": 80,
+    "lost": 0
+  },
+  "minAI": 58,
+  "minPop": 14,
+  "endings": {
+    "airport": 2000
+  },
+  "samples": [
+    {
+      "seed": 41,
+      "money": 137,
+      "pop": 47,
+      "ai": 58,
+      "debt": 7,
+      "spent": 41,
+      "private": 42,
+      "publicCost": 0,
+      "traffic": 80,
+      "lost": 0,
+      "promises": [
+        true,
+        true,
+        true
+      ],
+      "ending": "airport"
+    }
+  ]
+}
