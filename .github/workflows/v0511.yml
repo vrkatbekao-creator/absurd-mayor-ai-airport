@@ -1,0 +1,78 @@
+name: V0.5.1.1 accounting and strategy QA
+on:
+  pull_request:
+    paths:
+      - '荒謬市長_v0.5.1.1.html'
+      - 'assets/v0511*'
+      - 'scripts/*v0511*'
+      - 'tests/*v0511*'
+      - '.github/workflows/v0511.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Reproduce V0.5.1.1
+        run: |
+          python3 scripts/build-v0511.py
+          git diff --exit-code -- 荒謬市長_v0.5.1.1.html
+      - run: node --test tests/finance-v0511.test.cjs
+      - run: node scripts/balance-v0511.cjs --seeds=2000
+      - name: Verify only loan-cost classification changed
+        run: |
+          node - <<'JS'
+          const assert=require('node:assert/strict'),fs=require('node:fs');
+          const a=JSON.parse(fs.readFileSync('qa/balance-v0.5.1.json')),b=JSON.parse(fs.readFileSync('artifacts/balance-v0.5.1.1.json'));
+          for(const key of Object.keys(a.strategies)){
+            const x=a.strategies[key],y=b.strategies[key],oldCost=x.means.publicCost,newCost=y.means.publicCost;
+            delete x.means.publicCost;delete y.means.publicCost;assert.deepEqual(y,x,key);
+            assert.ok(Math.abs(oldCost-newCost-(key==='overbuild'?15:0))<.001,key);
+          }
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v0511-strategy-and-core
+          path: artifacts/*v0.5.1.1.json
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --package-lock=false @playwright/test@1.56.1
+      - name: Install real browsers with bounded retries
+        timeout-minutes: 7
+        env:
+          PLAYWRIGHT_DOWNLOAD_CONNECTION_TIMEOUT: '60000'
+        run: |
+          for attempt in 1 2 3; do
+            if timeout 120s npx playwright install --with-deps chromium firefox webkit; then exit 0; fi
+          done
+          exit 1
+      - name: Enable real headless audio output
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pulseaudio pulseaudio-utils
+          pulseaudio --start --exit-idle-time=-1
+          pactl load-module module-null-sink sink_name=mayor_test sink_properties=device.description=MayorTest
+          pactl set-default-sink mayor_test
+      - run: npx playwright test -c tests/v0511-playwright.config.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v0511-browser-QA
+          path: |
+            artifacts/v0511-screenshots/
+            artifacts/v0511-playwright-report/
+            artifacts/v0511-test-results/
+          retention-days: 14

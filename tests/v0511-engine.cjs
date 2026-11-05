@@ -10,7 +10,7 @@ function environment(save={},seed=41,file='荒謬市長_v0.5.1.1.html'){
  for(const script of compiled)script.runInContext(ctx,{timeout:3000});
  const names='game,newGame,valid,metrics,promises,endingKey,choosePolicy,develop,upgrade,administration,deferAction,doSettle,builds,cards,municipal';
  const extra=(file.includes('v0.5.1')||file.includes('v5.1'))?',projectQuote,publicBurden,pendingBurden,financeReady,takeLoan,migrateV50,validV2,storyReaction51,eventTitle51,source51,epilogue51,F51,configureV51':'';
- const api=vm.runInContext('({'+names+extra+'})',ctx);return {api,ctx,storage};
+ const api=vm.runInContext('({'+names+extra+(file.includes('v0.5.1.1')?',loanPrincipal51,pendingPrincipal51':'')+'})',ctx);return {api,ctx,storage};
 }
 function safePolicy(api,g){
  const options=api.cards[g.order[g.turn-1]][2];
