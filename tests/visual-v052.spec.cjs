@@ -61,7 +61,7 @@ test('reduced motion and accessible disclosure names survive language switching'
  const animations=await page.locator('.v042-scene').first().evaluate(e=>getComputedStyle(e).animationName);expect(animations).toBe('none');
 });
 for(const lang of ['zh','en','fr','nl'])test('loan cost, principal and repayment remain distinct '+lang,async({page},info)=>{
- await page.setViewportSize({width:390,height:844});const errors=[];page.on('pageerror',e=>errors.push(String(e)));await start(page,lang);await expect(page.locator('h1')).toContainText('V0.5.1.1');await safePolicy(page);
+ await page.setViewportSize({width:390,height:844});const errors=[];page.on('pageerror',e=>errors.push(String(e)));await start(page,lang);await expect(page.locator('h1')).toContainText('V0.5.2');await safePolicy(page);
  await page.locator('[data-v2="loan"]').click();await build(page,0,'park');let s=await state(page);expect(s.public).toBe(9);expect(s.pending).toBe(18);expect(s.game.private).toBe(0);expect(await page.evaluate(()=>pendingPrincipal51())).toBe(15);
  await page.locator('#v51-ledger-host summary').click();await expect(page.locator('#v51-ledger-host .v51-totals div')).toHaveCount(6);await noOverflow(page);await capture(page,info,'loan-accounting-'+lang);
  const before=s.game;await page.reload();expect((await state(page)).game).toEqual(before);await page.locator('[data-v2="settle"]').click();
