@@ -1,0 +1,60 @@
+name: V5.0 browser regression
+on:
+  pull_request:
+    paths:
+      - '荒謬市長_v5.0.html'
+      - 'tests/visual-v5.spec.cjs'
+      - 'tests/v5-playwright.config.cjs'
+      - '.github/workflows/visual-v5.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  visual:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright runner
+        run: npm install --no-save --package-lock=false @playwright/test@1.56.1
+      - name: Install real browser engines
+        run: npx playwright install --with-deps chromium firefox webkit
+      - name: Run full offline visual-first QA
+        run: npx playwright test -c tests/v5-playwright.config.cjs
+      - name: Preserve chromium screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v5-chromium-screenshots
+          path: artifacts/v5-screenshots/chromium/
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Preserve firefox screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v5-firefox-screenshots
+          path: artifacts/v5-screenshots/firefox/
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Preserve webkit screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v5-webkit-screenshots
+          path: artifacts/v5-screenshots/webkit/
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Preserve test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v5-test-report
+          path: |
+            artifacts/v5-playwright-report/
+            artifacts/v5-test-results/
+          retention-days: 14
+          if-no-files-found: warn
