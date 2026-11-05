@@ -4,7 +4,7 @@
 
 ## 立即遊玩
 
-已合併的 V0.5.0：下載 [荒謬市長_v0.5.0.html](荒謬市長_v0.5.0.html)，包含 A 版城市插畫、手機決策跳轉與原創離線配樂。V0.5.1 候選版：[荒謬市長_v0.5.1.html](荒謬市長_v0.5.1.html)，加入專案外資、公共負擔審計與有記憶的城市敘事；驗證狀態見 [QA 記錄](QA_REPORT_v0.5.1.md) 與 [PR #19](https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/pull/19)。各版本均可在瀏覽器離線開啟。 進度儲存在瀏覽器 localStorage；不同瀏覽器、不同檔案網址的儲存空間可能不相通。遊戲不需要帳號、伺服器或網路。
+已合併的 V0.5.0：下載 [荒謬市長_v0.5.0.html](荒謬市長_v0.5.0.html)，包含 A 版城市插畫、手機決策跳轉與原創離線配樂。已合併的 V0.5.1：[荒謬市長_v0.5.1.html](荒謬市長_v0.5.1.html)，加入專案外資、公共負擔審計與有記憶的城市敘事；驗證狀態見 [QA 記錄](QA_REPORT_v0.5.1.md) 與 [PR #19](https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/pull/19)。各版本均可在瀏覽器離線開啟。 進度儲存在瀏覽器 localStorage；不同瀏覽器、不同檔案網址的儲存空間可能不相通。遊戲不需要帳號、伺服器或網路。
 
 ## 每回合流程
 
@@ -38,3 +38,5 @@ V0.5.1 使用獨立存檔鍵，不覆寫 V0.5.0；舊檔只在同一儲存空間
 本 Repository 為私人測試，未啟用 GitHub Pages。
 
 版本號更正：原誤標 V5.0／V5.1，正式版本為 V0.5.0／V0.5.1。舊檔名 v5.0／v5.1 保留為相容入口；新下載請用 v0.5.0／v0.5.1。存檔鍵與存檔資料版本不隨產品版本改名。
+
+V0.5.1.1 候選版：[離線遊戲](荒謬市長_v0.5.1.1.html)。分開呈現公共成本、待付現金與借款本金，並完成五路線配對比較；見 [策略複核](BALANCE_REPORT_v0.5.1.1.md)、[QA](QA_REPORT_v0.5.1.1.md) 與 [PR #20](https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/pull/20)。

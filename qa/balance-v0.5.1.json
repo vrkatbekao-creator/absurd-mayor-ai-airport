@@ -1,0 +1,129 @@
+{
+  "version": "0.5.1",
+  "seeds": 2000,
+  "scope": "Five fixed action routes on paired shuffled policy orders. Safe policies for private/public/airport; maximum immediate publicity or public spending for the other two routes. No claim of optimal play or all-policy coverage.",
+  "strategies": {
+    "private": {
+      "games": 2000,
+      "means": {
+        "money": 93.39,
+        "pop": 56.11,
+        "ai": 75.21,
+        "publicCost": 0,
+        "lost": 45,
+        "aiValue": 72
+      },
+      "mins": {
+        "money": 84,
+        "pop": 28
+      },
+      "maxs": {
+        "money": 97,
+        "pop": 72
+      },
+      "endings": {
+        "miracle": 1901,
+        "airport": 99
+      },
+      "allPledges": 2000,
+      "deficitGames": 0
+    },
+    "public": {
+      "games": 2000,
+      "means": {
+        "money": 24.39,
+        "pop": 74.82,
+        "ai": 113.21,
+        "publicCost": 76,
+        "lost": 56,
+        "aiValue": 104
+      },
+      "mins": {
+        "money": 15,
+        "pop": 59
+      },
+      "maxs": {
+        "money": 28,
+        "pop": 87
+      },
+      "endings": {
+        "miracle": 1972,
+        "airport": 28
+      },
+      "allPledges": 0,
+      "deficitGames": 0
+    },
+    "airport": {
+      "games": 2000,
+      "means": {
+        "money": 110.39,
+        "pop": 37.66,
+        "ai": 9.21,
+        "publicCost": 17,
+        "lost": 0,
+        "aiValue": 0
+      },
+      "mins": {
+        "money": 101,
+        "pop": 14
+      },
+      "maxs": {
+        "money": 114,
+        "pop": 55
+      },
+      "endings": {
+        "airport": 2000
+      },
+      "allPledges": 0,
+      "deficitGames": 0
+    },
+    "publicity": {
+      "games": 2000,
+      "means": {
+        "money": -9.4,
+        "pop": 13.04,
+        "ai": 0,
+        "publicCost": 84.23,
+        "lost": 55,
+        "aiValue": 0
+      },
+      "mins": {
+        "money": -39,
+        "pop": 0
+      },
+      "maxs": {
+        "money": 28,
+        "pop": 24
+      },
+      "endings": {
+        "ppt": 2000
+      },
+      "allPledges": 0,
+      "deficitGames": 1413
+    },
+    "overbuild": {
+      "games": 2000,
+      "means": {
+        "money": -231.86,
+        "pop": 25.48,
+        "ai": 200.81,
+        "publicCost": 322.86,
+        "lost": 96,
+        "aiValue": 178
+      },
+      "mins": {
+        "money": -242,
+        "pop": 10
+      },
+      "maxs": {
+        "money": -220,
+        "pop": 34
+      },
+      "endings": {
+        "heater": 2000
+      },
+      "allPledges": 0,
+      "deficitGames": 2000
+    }
+  }
+}
