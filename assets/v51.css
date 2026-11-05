@@ -1,0 +1,9 @@
+/* V5.1: short reactions; ledgers and history stay below the current decision. */
+.v51-ledger,.v51-journal{margin:14px 0;border:1px solid #b3c6ac;border-radius:9px;background:#f8f7ee;padding:10px 12px;overflow-wrap:anywhere}
+.v51-ledger summary,.v51-journal summary{cursor:pointer;min-height:36px;font-weight:700;line-height:1.6;color:#244b38}
+.v51-ledger summary:focus-visible,.v51-journal summary:focus-visible{outline:3px solid #cc7533;outline-offset:3px}
+.v51-totals{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}.v51-totals div{padding:8px;background:#eaf0e2;border-radius:5px}.v51-totals dt{font-size:12px}.v51-totals dd{margin:4px 0 0;font-size:20px;font-weight:750}
+.v51-condition{display:block;font-size:12px;line-height:1.55;margin-top:6px;color:#465b4b}.choice:disabled{opacity:1;color:#52604e;background:#edece3;border-color:#b4b9aa;cursor:not-allowed}
+.v51-reaction{border-left:3px solid #a8783e;margin:12px 0;padding:10px 12px;background:#f4eedc;font-size:13px;line-height:1.6}.v51-reaction p{margin:4px 0 0}
+.v51-entries{padding-left:20px;font-size:13px;line-height:1.65}.v51-entries li{margin:10px 0}.v51-entries p{margin:5px 0 0}.v51-notice{padding:10px;background:#f7e9c9;color:#61451f;line-height:1.65}.v51-epilogue{border-top:1px solid #b3c6ac;margin-top:16px;padding-top:8px;line-height:1.6}
+@media(max-width:600px){.v51-ledger,.v51-journal{padding:8px 10px}.v51-totals{gap:6px}.v51-condition{font-size:12px}.v51-epilogue p{font-size:14px}}

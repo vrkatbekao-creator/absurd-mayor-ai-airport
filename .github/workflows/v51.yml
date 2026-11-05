@@ -1,0 +1,59 @@
+name: V5.1 finance, story and browser QA
+on:
+  pull_request:
+    paths:
+      - '荒謬市長_v5.1.html'
+      - 'assets/v51*'
+      - 'scripts/build-v51.py'
+      - 'tests/*v51*'
+      - '.github/workflows/v51.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check reproducible offline build
+        run: |
+          python3 scripts/build-v51.py
+          git diff --exit-code -- 荒謬市長_v5.1.html
+      - name: Finance, migration, causal history and 1000 policy orders
+        run: node --test tests/finance-v51.test.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v51-economy-results
+          path: artifacts/v51-*.json
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --package-lock=false @playwright/test@1.56.1
+      - run: npx playwright install --with-deps chromium firefox webkit
+      - name: Audio output for real browser music regression
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pulseaudio pulseaudio-utils
+          pulseaudio --start --exit-idle-time=-1
+          pactl load-module module-null-sink sink_name=mayor_test sink_properties=device.description=MayorTest
+          pactl set-default-sink mayor_test
+      - run: npx playwright test -c tests/v51-playwright.config.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v51-browser-QA
+          path: |
+            artifacts/v51-screenshots/
+            artifacts/v51-playwright-report/
+            artifacts/v51-test-results/
+          retention-days: 14
