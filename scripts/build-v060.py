@@ -19,7 +19,11 @@ a=s.index('function showEnd(){');b=s.index('function showIntro',a)
 s=s[:a]+'function showEnd(){showReadingEnd521()}\n'+s[b:]
 for name in ['v060-reading.css','v060.css']:
  s=s.replace('</style>',(root/'assets'/name).read_text(encoding='utf8')+'\n</style>')
-s=s.replace('</body>','<script id="v060-city">\n'+(root/'assets/v060-city.js').read_text(encoding='utf8')+'\n</script></body>')
+city=(root/'assets/v060-city.js').read_text(encoding='utf8')
+for marker,name in [('/* V060_FACILITIES */','v060-facilities.js'),('/* V060_LIFE */','v060-life.js')]:
+ assert city.count(marker)==1,marker
+ city=city.replace(marker,(root/'assets'/name).read_text(encoding='utf8'))
+s=s.replace('</body>','<script id="v060-city">\n'+city+'\n</script></body>')
 target=root/'荒謬市長_v0.6.0.html'
 temporary=target.with_suffix('.building')
 temporary.write_bytes(s.encode('utf8'))
