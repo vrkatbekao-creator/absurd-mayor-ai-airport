@@ -1030,7 +1030,8 @@ const MayorScore = (() => {
   if(b.dataset.v2==='tile'&&game.phase!=='build'){const index=Number(b.dataset.index);q('.c60-selected span').textContent=loc(game.tiles[index].name)+' · '+(game.phase==='policy'?tr('locked'):tr('settle'));}
  });
  document.addEventListener('click',e=>{const b=e.target.closest('[data-v2]');if(!b)return;const a=b.dataset.v2;
-  if(a==='tile'&&game.phase==='build'){ui.open=true;ui.view='land';ui.last=dock.querySelector('[data-city-view="land"]')}
+  if(a==='tile'&&game.phase==='build'){ui.open=true;ui.view='land';ui.last=dock.querySelector('[data-city-view="land"]');queueMicrotask(()=>q('#c60-sheet-title')?.focus({preventScroll:true}))}
+  else if(a==='action-tab')queueMicrotask(()=>q('#action [data-tab="'+b.dataset.tab+'"]')?.focus({preventScroll:true}));
   else if(['policy','build','upgrade','admin','defer','settle'].includes(a)){ui.open=false;queueMicrotask(()=>dock.querySelector('[data-city-view="action"]')?.focus({preventScroll:true}))}
   else if(a==='close')queueMicrotask(()=>dock.querySelector('[data-city-view="action"]')?.focus({preventScroll:true}));
  },true);
