@@ -1,0 +1,70 @@
+{
+  "viewport": "390 × 844",
+  "scope": "Initial main V0.5.2 versus V0.6.0 S1. Minimum page scroll to reach a 44px area of the first decision control; V0.6.0 needs one tap to open the panel. Panel-internal reading and cognitive load are not measured.",
+  "rows": [
+    {
+      "lang": "zh",
+      "version": "0.5.2",
+      "documentHeight": 2828,
+      "controlTop": 1582,
+      "minimumPageScrollToReachControl": 782
+    },
+    {
+      "lang": "zh",
+      "version": "0.6.0",
+      "documentHeight": 846,
+      "controlTop": 772,
+      "minimumPageScrollToReachControl": 0,
+      "panelHeight": 430,
+      "thirdChoiceVisible": true
+    },
+    {
+      "lang": "en",
+      "version": "0.5.2",
+      "documentHeight": 3015,
+      "controlTop": 1646,
+      "minimumPageScrollToReachControl": 847
+    },
+    {
+      "lang": "en",
+      "version": "0.6.0",
+      "documentHeight": 846,
+      "controlTop": 772,
+      "minimumPageScrollToReachControl": 0,
+      "panelHeight": 413,
+      "thirdChoiceVisible": true
+    },
+    {
+      "lang": "fr",
+      "version": "0.5.2",
+      "documentHeight": 3089,
+      "controlTop": 1709,
+      "minimumPageScrollToReachControl": 910
+    },
+    {
+      "lang": "fr",
+      "version": "0.6.0",
+      "documentHeight": 858,
+      "controlTop": 772,
+      "minimumPageScrollToReachControl": 0,
+      "panelHeight": 446,
+      "thirdChoiceVisible": true
+    },
+    {
+      "lang": "nl",
+      "version": "0.5.2",
+      "documentHeight": 3015,
+      "controlTop": 1698,
+      "minimumPageScrollToReachControl": 899
+    },
+    {
+      "lang": "nl",
+      "version": "0.6.0",
+      "documentHeight": 846,
+      "controlTop": 772,
+      "minimumPageScrollToReachControl": 0,
+      "panelHeight": 430,
+      "thirdChoiceVisible": true
+    }
+  ]
+}
