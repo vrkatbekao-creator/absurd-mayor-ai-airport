@@ -106,18 +106,18 @@
   document.querySelectorAll('[data-city-heading]').forEach(e=>e.textContent=tr(e.dataset.cityHeading));settingsButtons.innerHTML='<button type="button" class="choice" data-v2="restart">'+esc(tr('restart'))+'</button>';
   if(game.finished)closeSheet(false);else renderSheet();
  }
- drawV2=function(){const focus=document.activeElement,plot=focus?.classList.contains('c60-plot')?focus.dataset.index:null;baseDraw();decorateAction();renderMap();renderFinance();renderGoals();renderChrome();if(plot!==null&&!ui.open)q('.c60-plot[data-index="'+plot+'"]')?.focus({preventScroll:true})};
+ drawV2=function(){const focus=document.activeElement,plot=focus?.classList.contains('c60-plot')?focus.dataset.index:null;baseDraw();decorateAction();renderMap();renderFinance();renderGoals();renderChrome();const pending=ui.focus;ui.focus=null;if(!q('#modal [role="dialog"]')){const target=pending==='sheet'?q('#c60-sheet-title'):pending==='next'?dock.querySelector('[data-city-view="action"]'):pending?.startsWith('tab:')?q('#action [data-tab="'+pending.slice(4)+'"]'):plot!==null&&!ui.open?q('.c60-plot[data-index="'+plot+'"]'):null;target?.focus({preventScroll:true})}};
  document.addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
   if(b.matches('[data-city-close]')){closeSheet();return}
   if(b.dataset.cityView){const view=b.dataset.cityView;if(ui.open&&ui.view===view){closeSheet();return}if(game.finished){showEnd();return}if((view==='admin'||view==='land')&&game.phase==='build'){actionView=view==='admin'?'admin':'land';drawV2()}showSheet(view,b);return}
+  if(b.dataset.v2==='close')dock.querySelector('[data-city-view="action"]')?.focus({preventScroll:true});
   if(b.dataset.v2==='tile'&&game.phase!=='build'){const index=Number(b.dataset.index);q('.c60-selected span').textContent=loc(game.tiles[index].name)+' · '+(game.phase==='policy'?tr('locked'):tr('settle'));}
  });
  document.addEventListener('click',e=>{const b=e.target.closest('[data-v2]');if(!b)return;const a=b.dataset.v2;
-  if(a==='tile'&&game.phase==='build'){ui.open=true;ui.view='land';ui.last=dock.querySelector('[data-city-view="land"]');queueMicrotask(()=>q('#c60-sheet-title')?.focus({preventScroll:true}))}
-  else if(a==='action-tab')queueMicrotask(()=>q('#action [data-tab="'+b.dataset.tab+'"]')?.focus({preventScroll:true}));
-  else if(['policy','build','upgrade','admin','defer','settle'].includes(a)){ui.open=false;queueMicrotask(()=>dock.querySelector('[data-city-view="action"]')?.focus({preventScroll:true}))}
-  else if(a==='close')queueMicrotask(()=>dock.querySelector('[data-city-view="action"]')?.focus({preventScroll:true}));
+  if(a==='tile'&&game.phase==='build'){ui.open=true;ui.view='land';ui.focus='sheet'}
+  else if(a==='action-tab')ui.focus='tab:'+b.dataset.tab;
+  else if(['policy','build','upgrade','admin','defer','settle'].includes(a)){ui.open=false;ui.focus='next'}
  },true);
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ui.open&&!q('#modal [role="dialog"]')){e.preventDefault();closeSheet()}});
  drawV2();
