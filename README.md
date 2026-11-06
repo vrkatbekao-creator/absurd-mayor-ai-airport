@@ -4,6 +4,8 @@
 
 ## 立即遊玩
 
+V0.5.2.1閱讀調整：[單檔候選版](荒謬市長_v0.5.2.1.html)、[驗收與捲動距離](QA_REPORT_v0.5.2.1.md)、[Issue處理](ISSUE_QA_v0.5.2.1.md)、[階段快照](SNAPSHOTS_v0.5.2.1.md)。先看任期摘要，再選擇展開人物、審計、資金或歷史。
+
 目前V0.5.2：[單檔離線遊戲](荒謬市長_v0.5.2.html)。分開產業成果與政治承諾，四位人物依既有決策與實績回應，保持原玩法及存檔格式。見[QA與數據](QA_REPORT_v0.5.2.md)、[四節點快照](SNAPSHOTS_v0.5.2.md)、[PR #21](https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/pull/21)。
 
 已合併的 V0.5.0：下載 [荒謬市長_v0.5.0.html](荒謬市長_v0.5.0.html)，包含 A 版城市插畫、手機決策跳轉與原創離線配樂。已合併的 V0.5.1：[荒謬市長_v0.5.1.html](荒謬市長_v0.5.1.html)，加入專案外資、公共負擔審計與有記憶的城市敘事；驗證狀態見 [QA 記錄](QA_REPORT_v0.5.1.md) 與 [PR #19](https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/pull/19)。各版本均可在瀏覽器離線開啟。 進度儲存在瀏覽器 localStorage；不同瀏覽器、不同檔案網址的儲存空間可能不相通。遊戲不需要帳號、伺服器或網路。

@@ -1,0 +1,96 @@
+{
+  "version": "0.5.2.1",
+  "baseline": "0.5.1.1",
+  "seeds": 2000,
+  "scope": "Six fixed action routes, paired identical policy orders, all saved fields after policy/action/settlement, round-6 and completed-save reloads. No claim of exhaustive or optimal-policy balance.",
+  "pairedGames": 12000,
+  "simulatedGames": 24000,
+  "strategies": {
+    "private": {
+      "games": 2000,
+      "means": {
+        "money": 93.395,
+        "pop": 56.1135,
+        "ai": 75.206,
+        "publicCost": 0,
+        "traffic": 35
+      },
+      "allPledges": 2000,
+      "endings": {
+        "miracle": 1901,
+        "airport": 99
+      }
+    },
+    "public": {
+      "games": 2000,
+      "means": {
+        "money": 24.395,
+        "pop": 74.8225,
+        "ai": 113.206,
+        "publicCost": 76,
+        "traffic": 35
+      },
+      "allPledges": 0,
+      "endings": {
+        "miracle": 1972,
+        "airport": 28
+      }
+    },
+    "airport": {
+      "games": 2000,
+      "means": {
+        "money": 110.395,
+        "pop": 37.6625,
+        "ai": 9.206,
+        "publicCost": 17,
+        "traffic": 80
+      },
+      "allPledges": 0,
+      "endings": {
+        "airport": 2000
+      }
+    },
+    "publicity": {
+      "games": 2000,
+      "means": {
+        "money": -9.4025,
+        "pop": 13.04,
+        "ai": 0,
+        "publicCost": 84.2305,
+        "traffic": 35
+      },
+      "allPledges": 0,
+      "endings": {
+        "ppt": 2000
+      }
+    },
+    "overbuild": {
+      "games": 2000,
+      "means": {
+        "money": -231.862,
+        "pop": 25.476,
+        "ai": 200.805,
+        "publicCost": 307.862,
+        "traffic": 0
+      },
+      "allPledges": 0,
+      "endings": {
+        "heater": 2000
+      }
+    },
+    "coexist": {
+      "games": 2000,
+      "means": {
+        "money": 138.395,
+        "pop": 44.1355,
+        "ai": 61.206,
+        "publicCost": 0,
+        "traffic": 80
+      },
+      "allPledges": 2000,
+      "endings": {
+        "airport": 2000
+      }
+    }
+  }
+}
