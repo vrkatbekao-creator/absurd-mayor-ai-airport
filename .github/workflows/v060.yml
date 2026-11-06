@@ -30,6 +30,12 @@ jobs:
           JS
       - run: node --test tests/finance-v060.test.cjs tests/startup-v060.test.cjs tests/narrative-v060.test.cjs
       - run: node scripts/regression-v060.cjs --seeds=2000
+      - name: Compare recorded paired regression data
+        run: |
+          node - <<'JS'
+          const fs=require('fs'),assert=require('assert/strict');
+          assert.deepEqual(JSON.parse(fs.readFileSync('artifacts/regression-v0.6.0.json')),JSON.parse(fs.readFileSync('qa/regression-v0.6.0.json')));
+          JS
       - uses: actions/upload-artifact@v4
         if: always()
         with:

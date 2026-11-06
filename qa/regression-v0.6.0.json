@@ -1,5 +1,5 @@
 {
-  "version": "0.6.0-S1",
+  "version": "0.6.0-S2",
   "baseline": "0.5.2",
   "seeds": 2000,
   "scope": "Six fixed action routes, paired identical policy orders, all saved fields after policy/action/settlement, round-6 and completed-save reloads. No claim of exhaustive or optimal-policy balance.",

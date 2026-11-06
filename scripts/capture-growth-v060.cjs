@@ -1,0 +1,6 @@
+// Record the actual offline game, using the same timer control as acceptance tests.
+const {chromium}=require('@playwright/test'),path=require('path'),fs=require('fs'),{pathToFileURL}=require('url');
+(async()=>{const browser=await chromium.launch({headless:true,executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe'}),page=await browser.newPage({viewport:{width:390,height:844}});await page.clock.install({time:new Date('2026-11-06T12:00:00Z')});await page.goto(pathToFileURL(path.resolve('荒謬市長_v0.6.0.html')).href);await page.clock.pauseAt(new Date('2026-11-06T12:05:00Z'));await page.locator('[data-v2="close"]').click();await page.evaluate(()=>{choosePolicy(game,0);develop(game,7,'lab');doSettle(game);choosePolicy(game,0);game.selected=7;actionView='land';drawV2()});await page.locator('.c60-plot[data-index="7"]').click();await page.locator('#action [data-v2="upgrade"]').click();await page.mouse.move(0,0);const dir=path.resolve('artifacts/v060-growth-frames');fs.mkdirSync(dir,{recursive:true});
+ for(let n=0;n<19;n++){if(n)await page.clock.runFor(200);await page.screenshot({path:path.join(dir,String(n).padStart(2,'0')+'.png'),animations:'disabled'})}
+ await browser.close();console.log(dir);
+})().catch(e=>{console.error(e);process.exitCode=1});
