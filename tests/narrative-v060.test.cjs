@@ -12,10 +12,10 @@ test('industrial branches cover smaller airport, closure, shortage, ecology and 
  const h=api.newGame();h.phase='build';api.develop(h,6,'park');h.phase='build';api.develop(h,8,'park');assert.equal(api.assessment52(h).industry,'green');
 });
 test('checkpoint text uses the city at that turn rather than later construction',()=>{
- const {api,g}=coexist(4),e=g.story.events.find(x=>x.kind==='milestone');const before=api.milestoneText52(g,e);assert.match(before,/其他地塊.*AI/);g.phase='build';api.develop(g,1,'data');assert.equal(api.metrics(g).traffic,0);assert.equal(api.milestoneText52(g,e),before);assert.equal(api.historyState52(g,e).tiles[1].type,'original');
+ const {api,g,ctx}=coexist(4),e=g.story.events.find(x=>x.kind==='milestone');vm.runInContext("lang='zh'",ctx);const before=api.milestoneText52(g,e);assert.match(before,/其他地塊.*AI/);g.phase='build';api.develop(g,1,'data');assert.equal(api.metrics(g).traffic,0);assert.equal(api.milestoneText52(g,e),before);assert.equal(api.historyState52(g,e).tiles[1].type,'original');
 });
 test('incomplete old history remains unknown, while present-day facts are still visible',()=>{
- const old=environment({},41,'荒謬市長_v0.5.0.html').api.game;old.turn=5;const e=environment({'absurd-mayor-v02':JSON.stringify(old)}),g=e.api.game;e.api.configureV51();e.api.configureV052();const a=e.api.assessment52(g);assert.equal(a.verified,2);assert.equal(a.financeUnknown,true);assert.match(e.api.milestoneText52(g,{turn:4,key:'milestone4b'}),/舊歷史不足/);assert.match(e.api.assessmentPanel52(),/無法核實/);
+ const old=environment({},41,'荒謬市長_v0.5.0.html').api.game;old.turn=5;const e=environment({'absurd-mayor-v02':JSON.stringify(old),'absurd-mayor-language':'zh'}),g=e.api.game;e.api.configureV51();e.api.configureV052();const a=e.api.assessment52(g);assert.equal(a.verified,2);assert.equal(a.financeUnknown,true);assert.match(e.api.milestoneText52(g,{turn:4,key:'milestone4b'}),/舊歷史不足/);assert.match(e.api.assessmentPanel52(),/無法核實/);
 });
 test('four languages share all assessment keys and summaries without writing state',()=>{
  const {api,g,ctx}=coexist();const before=JSON.stringify(g);for(const lang of ['zh','en','fr','nl']){vm.runInContext('lang='+JSON.stringify(lang),ctx);for(const [k,v] of Object.entries(api.N52))assert.ok(v[lang],k);assert.ok(api.assessmentPanel52().length>100)}assert.equal(JSON.stringify(g),before);

@@ -4,7 +4,7 @@ const {environment,safePolicy}=require('./v060-engine.cjs');
 test('new game has one shuffle; resume consumes no random numbers and preserves old keys',()=>{
  const e=environment({'absurd-mayor-v1':'legacy-sentinel'});assert.equal(e.randomCalls,14);assert.equal(vm.runInContext('typeof fresh+":"+typeof s+":"+typeof policy',e.ctx),'undefined:undefined:undefined');
  const raw=JSON.stringify(e.api.game),loaded=environment({'absurd-mayor-v51':raw,'absurd-mayor-v1':'legacy-sentinel'});assert.equal(loaded.randomCalls,0);assert.equal(JSON.stringify(loaded.api.game),raw);assert.equal(loaded.storage.get('absurd-mayor-v1'),'legacy-sentinel');assert.deepEqual(loaded.writes,[]);
- vm.runInContext('persist()',loaded.ctx);assert.equal(loaded.storage.get('absurd-mayor-v1'),'legacy-sentinel');assert.ok(loaded.writes.every(k=>['absurd-mayor-v51','absurd-mayor-language'].includes(k)));
+ vm.runInContext('persist()',loaded.ctx);assert.equal(loaded.storage.get('absurd-mayor-v1'),'legacy-sentinel');assert.deepEqual(loaded.writes,['absurd-mayor-v51']);
  vm.runInContext('game=newGame()',loaded.ctx);assert.equal(loaded.randomCalls,14);
 });
 test('shipped data script has no old engine, DOM events or startup rendering',()=>{

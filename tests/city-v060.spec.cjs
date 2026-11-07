@@ -8,6 +8,45 @@ async function build(page,i,type){await page.locator('.c60-plot[data-index="'+i+
 async function defer(page){await open(page,'action');await page.locator('#action [data-tab="defer"]').click();await expect(page.locator('#action [data-tab="defer"]')).toBeFocused();await page.locator('#action [data-v2="defer"]').click()}
 async function capture(page,info,name){const dir=path.resolve(__dirname,'../artifacts/v060-screenshots',info.project.name);fs.mkdirSync(dir,{recursive:true});await page.screenshot({path:path.join(dir,name+'.png')})}
 async function noOverflow(page){const d=await page.evaluate(()=>({w:innerWidth,doc:document.documentElement.scrollWidth,body:document.body.scrollWidth}));expect(d.doc).toBeLessThanOrEqual(d.w+1);expect(d.body).toBeLessThanOrEqual(d.w+1)}
+
+for (const [locale, language, documentLanguage] of [
+  ['zh-TW', 'zh', 'zh-Hant'],
+  ['en-GB', 'en', 'en'],
+  ['fr-BE', 'fr', 'fr'],
+  ['nl-BE', 'nl', 'nl'],
+  ['ja-JP', 'en', 'en'],
+]) {
+  test.describe('Browser locale ' + locale, () => {
+    test.use({ locale });
+
+    test('chooses the interface language on the first visit', async ({ page }) => {
+      await page.goto(url);
+      await expect(page.locator('.lang select')).toHaveValue(language);
+      await expect(page.locator('html')).toHaveAttribute('lang', documentLanguage);
+      expect(await page.evaluate(() => localStorage.getItem('absurd-mayor-language'))).toBeNull();
+    });
+  });
+}
+
+test('remembers an explicit language choice without changing the save', async ({ page }) => {
+  await page.goto(url);
+  await page.evaluate(() => {
+    persist();
+    localStorage.setItem('absurd-mayor-language', 'nl');
+  });
+  await page.reload();
+  const picker = page.locator('.lang select');
+  await expect(picker).toHaveValue('nl');
+  const save = await page.evaluate(() => localStorage.getItem('absurd-mayor-v51'));
+
+  await picker.selectOption('fr');
+  await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
+  expect(await page.evaluate(() => localStorage.getItem('absurd-mayor-v51'))).toBe(save);
+  await page.reload();
+  await expect(picker).toHaveValue('fr');
+  expect(await page.evaluate(() => localStorage.getItem('absurd-mayor-v51'))).toBe(save);
+});
+
 for(const width of [390,1024,1440])for(const lang of ['zh','en','fr','nl'])for(const route of ['coexist','financed'])test(`${route} map, floating panels, twelve rounds and saves ${width} ${lang}`,async({page},info)=>{
  await page.setViewportSize({width,height:width===390?844:900});await page.emulateMedia({reducedMotion:'reduce'});const errors=[],requests=[];page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(/^https?:/.test(r.url()))requests.push(r.url())});
  await page.addInitScript(()=>{let seed=41;Math.random=()=>((seed=(seed*16807)%2147483647)-1)/2147483646});await page.goto(url);await page.locator('.lang select').selectOption(lang);await page.locator('[data-v2="close"]').click();await expect(page.locator('#c60-dock [data-city-view="action"]')).toBeFocused();
