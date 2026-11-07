@@ -91,7 +91,13 @@ function cameraFocus4(i){const p=P(i%3*110+49,Math.floor(i/3)*110+49,18);camera4
 cameraControls4.querySelector('button').addEventListener('click',()=>{camera4.zoom=camera4.zoom>1?1:1.65;if(camera4.zoom===1){camera4.x=380;camera4.y=240}else if(game.selected!==null)cameraFocus4(game.selected);cameraLabels4();cityFit()});
 city.addEventListener('pointerdown',()=>{camera4.pointerFocus=true},true);
 for(const event of ['pointerup','pointercancel'])document.addEventListener(event,()=>{camera4.pointerFocus=false},true);
-city.addEventListener('focusin',e=>{const b=e.target.closest('.c60-plot');if(b&&camera4.zoom>1&&!ui.open&&!camera4.pointerFocus)cameraFocus4(Number(b.dataset.index))});
+city.addEventListener('focus',e=>{const b=e.target.closest('.c60-plot');if(b&&camera4.zoom>1&&!ui.open&&!camera4.pointerFocus)cameraFocus4(Number(b.dataset.index))},true);
+city.addEventListener('keydown',e=>{
+ if(e.key!=='Tab'||e.altKey||e.ctrlKey||e.metaKey||camera4.zoom===1||ui.open||growth.current)return;
+ const b=e.target.closest('.c60-plot'),i=b?Number(b.dataset.index)+(e.shiftKey?-1:1):e.shiftKey&&e.target.matches('[data-city-zoom]')?8:!e.shiftKey&&e.target.matches('[data-city-motion]')?0:-1;
+ const target=i>=0&&i<9?q('.c60-plot[data-index="'+i+'"]'):null;if(!target)return;
+ e.preventDefault();cameraFocus4(i);target.focus({preventScroll:true});
+});
 city.addEventListener('pointerdown',e=>{if(camera4.zoom===1||ui.open||growth.current||e.button!==0||e.target.closest('.c60-camera,.c60-motion,.c60-growth,.c60-recap'))return;camera4.drag={id:e.pointerId,x:e.clientX,y:e.clientY,cx:camera4.x,cy:camera4.y,moved:false}});
 city.addEventListener('pointermove',e=>{const d=camera4.drag;if(!d||d.id!==e.pointerId)return;const dx=e.clientX-d.x,dy=e.clientY-d.y;if(!d.moved&&Math.hypot(dx,dy)<8)return;if(!d.moved){d.moved=true;city.setPointerCapture(e.pointerId)}e.preventDefault();camera4.x=Math.max(200,Math.min(560,d.cx-dx/camera4.scale));camera4.y=Math.max(100,Math.min(360,d.cy-dy/camera4.scale));cityFit()});
 for(const event of ['pointerup','pointercancel'])city.addEventListener(event,e=>{const d=camera4.drag;if(!d||d.id!==e.pointerId)return;if(d.moved)camera4.ignore=performance.now()+350;camera4.drag=null;if(city.hasPointerCapture(e.pointerId))city.releasePointerCapture(e.pointerId)});
