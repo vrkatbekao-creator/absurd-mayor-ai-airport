@@ -57,12 +57,23 @@ jobs:
         with:
           node-version: '22'
       - run: npm install --no-save --package-lock=false @playwright/test@1.56.1
-      - run: npx playwright test -c tests/v060-playwright.config.cjs --project=${{ matrix.browser }}
-      - uses: actions/upload-artifact@v4
+      - name: Run browser tests
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_FILE: artifacts/v060-browser-report.json
+        run: npx playwright test -c tests/v060-playwright.config.cjs --project=${{ matrix.browser }} --reporter=list,json
+      - name: Upload browser screenshots
+        uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: v060-browser-${{ matrix.browser }}
-          path: |
-            artifacts/v060-screenshots/
-            artifacts/v060-test-results/
+          name: v060-screenshots-${{ matrix.browser }}
+          path: artifacts/v060-screenshots/
           retention-days: 1
+      - name: Upload browser QA results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v060-browser-qa-${{ matrix.browser }}
+          path: |
+            artifacts/v060-browser-report.json
+            artifacts/v060-test-results/
+          retention-days: 14
