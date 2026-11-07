@@ -55,7 +55,7 @@ function makeRecap(before){
  const entry=game.log.find(x=>x.kind==='settlement'&&x.turn===before.turn);life.recap={turn:before.turn,delta:{money:game.money-before.money,ai:game.ai-before.ai,pop:game.pop-before.pop},production:entry?.production||0,airport:entry?.airport||0,started:performance.now()};
  if(!reduced.matches)recap.animate([{opacity:.4,transform:'translateY(8px)'},{opacity:1,transform:'translateY(0)'}],{duration:800,easing:'ease-out'});
 }
-function renderLifeUI(){renderRecap();syncLife();cityFit()}
+function renderLifeUI(){renderRecap();syncLife();cityFit();cameraLabels4()}
 motionButton.addEventListener('click',()=>{life.enabled=!life.enabled;syncLife()});
 document.addEventListener('click',event=>{const b=event.target.closest('[data-city-night]');if(!b)return;life.night=!life.night;updateLifeLabels();paintOperations()});
 document.addEventListener('visibilitychange',syncLife);window.addEventListener('pagehide',()=>{life.suspended=true;syncLife()});window.addEventListener('pageshow',()=>{life.suspended=false;syncLife()});

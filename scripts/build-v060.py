@@ -17,10 +17,10 @@ for name in ['v060-accessibility.js','v060-reading.js']:
  s=s.replace(anchor,(root/'assets'/name).read_text(encoding='utf8')+'\n'+anchor)
 a=s.index('function showEnd(){');b=s.index('function showIntro',a)
 s=s[:a]+'function showEnd(){showReadingEnd521()}\n'+s[b:]
-for name in ['v060-reading.css','v060.css']:
+for name in ['v060-reading.css','v060.css','v060-art.css']:
  s=s.replace('</style>',(root/'assets'/name).read_text(encoding='utf8')+'\n</style>')
 city=(root/'assets/v060-city.js').read_text(encoding='utf8')
-for marker,name in [('/* V060_FACILITIES */','v060-facilities.js'),('/* V060_LIFE */','v060-life.js')]:
+for marker,name in [('/* V060_FACILITIES */','v060-facilities.js'),('/* V060_ART */','v060-art.js'),('/* V060_LIFE */','v060-life.js')]:
  assert city.count(marker)==1,marker
  city=city.replace(marker,(root/'assets'/name).read_text(encoding='utf8'))
 s=s.replace('</body>','<script id="v060-city">\n'+city+'\n</script></body>')

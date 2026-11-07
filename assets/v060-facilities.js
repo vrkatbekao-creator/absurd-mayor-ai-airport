@@ -28,18 +28,18 @@ function facilityGeometry(type,level,x,y,m,animation=null){
   out+=building(x,y,43,38,Math.min(2,v),m,type,{roof,opacity:roofAmount,unlit:p<.93,litFloors:fromFloors});
   if(v>1)out+='<g data-facility-wing>'+box(x+45,y+6,0,27*(v-1),35,20,'#a2c7ba')+'</g>';
   const stalls=v<1?3*v:3+2*(v-1);out+='<g data-facility-stalls>';
-  for(let n=0;n<Math.ceil(stalls);n++){const amount=Math.min(1,stalls-n);out+=box(x+n*16,y+48,0,15*amount,19,17,'#d8d7b6');out+=poly([[x+n*16,y+68,12],[x+15*amount+n*16,y+68,12],[x+15*amount+n*16,y+44,21],[x+n*16,y+44,21]],n%2?'#dfb478':'#679c95');out+=box(x+3+n*16,y+64,2,Math.max(1,9*amount),2,8,'#416b61')}
+  for(let n=0;n<Math.ceil(stalls);n++){const amount=Math.min(1,stalls-n);out+=box(x+n*16,y+48,0,15*amount,19,17,'#d8d7b6');out+=poly([[x+n*16,y+68,12],[x+15*amount+n*16,y+68,12],[x+15*amount+n*16,y+44,21],[x+n*16,y+44,21]],n%2?'#df9761':'#348b80');out+=box(x+3+n*16,y+64,2,Math.max(1,9*amount),2,8,'#416b61')}
   out+='</g>';
  }else if(type==='show'){
   const body=Math.min(1,v);out+=building(x,y,64,51,body,m,type,{roof,opacity:roofAmount,unlit:p<.93});
-  if(roof){out+='<g data-facility-pavilion opacity="'+roofAmount+'">';for(let n=0;n<4;n++)out+=poly([[x+n*16,y,21],[x+16+n*16,y,21],[x+16+n*16,y+52,21],[x+n*16,y+52,21]],n%2?'#e4c28a':'#93babc');out+='</g>'}
+  if(roof){out+='<g data-facility-pavilion opacity="'+roofAmount+'">';for(let n=0;n<4;n++)out+=poly([[x+n*16,y,21],[x+16+n*16,y,21],[x+16+n*16,y+52,21],[x+n*16,y+52,21]],n%2?'#edb34f':'#c96f50');out+='</g>'}
   if(v>1)out+='<g data-facility-wing>'+box(x+63,y-10,0,17*(v-1),58,24,'#e3bf8c')+box(x+13,y+62,0,47,10*(v-1),8,'#b48e5d')+'</g>';
  }else if(type==='power'){
   const count=v<1?3*v:3+2*(v-1);out+='<g data-facility-transformers>';
-  for(let n=0;n<Math.ceil(count);n++){const a=Math.min(1,count-n);out+=box(x+n*15,y+7,0,11,42,20*a,'#92b5a7');if(a>.5)out+=box(x+3+n*15,y+16,20*a,5,24,9*a,'#d3d6b9')}
+  for(let n=0;n<Math.ceil(count);n++){const a=Math.min(1,count-n);out+=box(x+n*15,y+7,0,11,42,20*a,'#5d978c');if(a>.5)out+=box(x+3+n*15,y+16,20*a,5,24,9*a,'#d3d6b9')}
   out+='</g>';if(roof){out+='<g data-facility-busbar opacity="'+roofAmount+'">'+box(x-1,y+55,1,Math.min(77,24+25*v),7,10,'#6c8f80')+'</g>'}
  }else if(type==='park'){
-  out=poly([[x-9,y-9,1],[x+81,y-9,1],[x+81,y+79,1],[x-9,y+79,1]],'#bed49a');
+  out=poly([[x-9,y-9,1],[x+81,y-9,1],[x+81,y+79,1],[x-9,y+79,1]],'#afce8d');
   const scale=animation?(fromLevel?1:p<.16?0:p<.38?ease((p-.16)/.22):1):1,treeHeight=v<=1?23*v:23+17*(v-1),crown=Math.max(.15,Math.min(1.4,treeHeight/28));
   out+='<g data-facility-paths>'+poly([[x-6,y+35,2],[x-6+84*scale,y+35,2],[x-6+84*scale,y+41,2],[x-6,y+41,2]],'#ded4b0');if(v>1)out+=poly([[x+37,y-6,2],[x+43,y-6,2],[x+43,y-6+78*(v-1),2],[x+37,y-6+78*(v-1),2]],'#ded4b0');out+='</g>';
   if(v>0){out+='<g data-facility-trees>';for(const [a,b] of [[5,9],[34,11],[65,24],[13,59],[66,63]])out+=tree(x+a,y+b,treeHeight,crown);if(v>1){out+=tree(x+42,y+65,treeHeight*.8,crown);out+=tree(x+68,y-1,treeHeight*.85,crown)}out+='</g>'}
