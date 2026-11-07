@@ -1,44 +1,44 @@
-# 荒謬市長：AI 起飛，飛機停飛！
+# 荒謬市長 · Absurd Mayor
 
-繁體中文、English、Français、Nederlands 四語、單檔離線策略遊戲。你在 12 回合內處理一座仍然有價值的機場被宣布改建 AI 園區後的政治、財政與公共選擇。
+**AI 起飛，飛機停飛！**
 
-## 立即遊玩
+機場還在營運，市府卻宣布要改建成 AI 園區。你有 12 回合決定機場要留下多少、城市要花多少，以及競選承諾要如何兌現。這是一款以等角城市地圖為主的開源策略小品，支援繁體中文、English、Français、Nederlands。
 
-目前V0.5.2：[單檔離線遊戲](荒謬市長_v0.5.2.html)。分開產業成果與政治承諾，四位人物依既有決策與實績回應，保持原玩法及存檔格式。見[QA與數據](QA_REPORT_v0.5.2.md)、[四節點快照](SNAPSHOTS_v0.5.2.md)、[PR #21](https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/pull/21)。
+**[展示網站](https://vrkatbekao-creator.github.io/absurd-mayor-ai-airport/) · [線上試玩 V0.6.0](https://vrkatbekao-creator.github.io/absurd-mayor-ai-airport/play.html) · [離線 HTML 檔](荒謬市長_v0.6.0.html)**
 
-已合併的 V0.5.0：下載 [荒謬市長_v0.5.0.html](荒謬市長_v0.5.0.html)，包含 A 版城市插畫、手機決策跳轉與原創離線配樂。已合併的 V0.5.1：[荒謬市長_v0.5.1.html](荒謬市長_v0.5.1.html)，加入專案外資、公共負擔審計與有記憶的城市敘事；驗證狀態見 [QA 記錄](QA_REPORT_v0.5.1.md) 與 [PR #19](https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/pull/19)。各版本均可在瀏覽器離線開啟。 進度儲存在瀏覽器 localStorage；不同瀏覽器、不同檔案網址的儲存空間可能不相通。遊戲不需要帳號、伺服器或網路。
+![V0.6.0 實機畫面，夜色中的等角機場小城與底部市政操作列](site/media/city-night.webp)
 
-## 每回合流程
+## 怎麼玩
 
-1. **政策事件** — 從三項政治決策中選擇一項，可能產生延遲的財政／民意影響。
-2. **市政行動** — 只做一項：在原始土地建設、升級既有設施（Lv.1 → Lv.2）、執行一項尚未使用的行政措施，或暫緩行動並承擔政治後果。**不需要每回合重新建設。**
-3. **結算** — 計算機場吞吐量及收入、AI 生產、電力、財政、民意與政見債務。第 4、8、12 回合有里程碑。
+1. **選政策。** 從三個選項中決定如何回應本回合的事件。
+2. **做市政行動。** 選擇建設、升級、行政措施或暫緩行動。每回合最多做一項。
+3. **結算。** 查看航班、財政、民意、AI 產業和政見結果。第 4、8、12 回合是任期里程碑。
 
-已建設的土地不能直接覆蓋；各行政／融資管道各限一次，升級各地塊限一次。保留機場、務實轉型及政策轉彎都可以成為有意義的玩家選擇。
+從展示網站點選「下載離線版」，再用瀏覽器開啟 HTML 檔即可遊玩。進度儲存在目前瀏覽器的儲存空間，線上版、離線檔案與其他瀏覽器的進度可能各自獨立。
 
-## V0.5.1 與快照
+## V0.6.0
 
-V0.5.1 使用獨立存檔鍵，不覆寫 V0.5.0；舊檔只在同一儲存空間可讀到時複製匯入，歷史投資不會重複加錢。舊歷史不足時，第三項政見標示無法核實。
+- 城市地圖成為主畫面。建築逐層成長，施工、完工和日夜變化會反映在地圖上。
+- 政策、地塊、行政、財政與政見從底部浮窗開啟。插圖、圖表和關鍵數值先呈現重點，細節按需展開。
+- 機場名目容量集中於財政的機場總覽。地塊顯示當次建設或升級的影響。
+- 支援鍵盤操作和減少動態效果。玩法、經濟與存檔格式沿用前版。
 
-每個完成節點都有獨立 [快照版本](SNAPSHOTS_v0.5.1.md)。資金、存檔與敘事規格分別見 [資金規則](GAME_DESIGN_v0.5.1.md)、[存檔相容](SAVE_DESIGN_v0.5.1.md)、[敘事節點](STORY_DESIGN_v0.5.1.md)。
+本版通過 41 項核心測試、252 項 Chromium／Firefox／WebKit 測試，以及 12,000 組配對回歸。測試涵蓋三種寬度、四語、12 回合與存檔重載。人工視覺檢查使用 Chromium 截圖，實體裝置、真人讀屏與母語校訂未納入該次驗收。
 
-## 舊版與測試
+[V0.6.0 合併紀錄](https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/pull/23) · [S4 驗收](QA_REPORT_v0.6.0-S4.md) · [CI](https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/actions/runs/42368986959/attempts/2)
 
-- `荒謬市長_v0.2.html` — 保留的 v0.2.1 單檔遊戲。
-- `荒謬市長_v0.3.html` — 新增的 v0.3 測試版單檔遊戲。
-- `GAME_DESIGN_v0.3.md` — v0.3 政策預測／結局審計／決策分類設計。
-- `BALANCE_REPORT_v0.2.2.md`、`BALANCE_SENSITIVITY_v0.2.2.md` — v0.2.1 引擎的 800+1,100 局策略比較與限制。
-- `GAME_DESIGN_v0.2.1.md` — 新市政行動、升級、行政措施與存檔相容性。
-- `GAME_DESIGN_v0.2.md` — 原有機場經濟與結局規則。
-- `CHANGELOG_v0.2.1.md` — 本次變更。
-- `TEST_REPORT_v0.2.md` — **舊版 v0.2** 600 局模擬，不能當作 v0.2.1 的策略平衡證據。
-- `BROWSER_QA_ISSUE2.md` — 真實桌面瀏覽器（Chromium、Firefox、WebKit）響應式測試及人工截圖審查。
-- `tests/regression.test.cjs`, `tests/municipal-regression.test.cjs`, `tests/browser-playtest.spec.cjs` — 邏輯與瀏覽器回歸測試。
+## 版本與原始碼
 
-**範圍限制：** V0.5.1 的三引擎、三尺寸、四語、鍵盤與存檔驗證範圍見新版 QA 記錄。未執行實體手機、螢幕閱讀器人工朗讀或母語編輯逐句校訂。舊版 QA 報告只證明其標示版本。
+- **V0.6.0 階段快照** · [S1](https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/tree/codex/snapshot-v0.6.0-stage-1) · [S2](https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/tree/codex/snapshot-v0.6.0-stage-2) · [S3](https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/tree/codex/snapshot-v0.6.0-stage-3) · [S4](https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/tree/codex/snapshot-v0.6.0-stage-4)
+- **先前版本** · [V0.5.2.1](荒謬市長_v0.5.2.1.html) · [V0.5.2](荒謬市長_v0.5.2.html) · [V0.5.1.1](荒謬市長_v0.5.1.1.html) · [V0.5.1](荒謬市長_v0.5.1.html) · [V0.5.0](荒謬市長_v0.5.0.html) · [V0.4.2](荒謬市長_v0.4.2.html)
+- **建置與測試** · [遊戲建置腳本](scripts/build-v060.py) · [V0.6.0 驗收流程](.github/workflows/v060.yml) · [網站原始碼](site/)
 
-本 Repository 為私人測試，未啟用 GitHub Pages。
+舊檔名 `v5.0`、`v5.1` 為歷史入口，對應正式版本 V0.5.0、V0.5.1。
 
-版本號更正：原誤標 V5.0／V5.1，正式版本為 V0.5.0／V0.5.1。舊檔名 v5.0／v5.1 保留為相容入口；新下載請用 v0.5.0／v0.5.1。存檔鍵與存檔資料版本不隨產品版本改名。
+歡迎在 [Issues](https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/issues) 回報問題。若能附上版本、瀏覽器、語言與重現步驟，會更容易定位。
 
-已合併的 V0.5.1.1：[離線遊戲](荒謬市長_v0.5.1.1.html)。分開呈現公共成本、待付現金與借款本金，並完成五路線配對比較；見 [策略複核](BALANCE_REPORT_v0.5.1.1.md)、[QA](QA_REPORT_v0.5.1.1.md) 與 [PR #20](https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/pull/20)。
+## English
+
+Absurd Mayor is a 12-turn, open-source city strategy game. A working airport is slated for conversion into an AI district. Choose policies, build or upgrade the city, and see which campaign promises you can keep. Play in Traditional Chinese, English, French or Dutch. The single-file HTML edition runs offline.
+
+本專案採 [MIT 授權](LICENSE)。
