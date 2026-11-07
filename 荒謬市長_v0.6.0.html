@@ -580,7 +580,12 @@ function showReadingEnd521(){const saved=readingSavedView521(),a=assessment52(),
  else{document.getElementById('endtitle').focus({preventScroll:true});pane.scrollTop=0}
 }
 
-const VKEY='absurd-mayor-v51';let lang;try{lang=localStorage.getItem('absurd-mayor-language')||'zh'}catch(_){lang='zh'}if(!['zh','en','fr','nl'].includes(lang))lang='zh';
+const VKEY='absurd-mayor-v51';const languageKey='absurd-mayor-language';
+const supportedLanguages=['zh','en','fr','nl'];
+const browserLocale=globalThis.navigator?.languages?.[0]||globalThis.navigator?.language||'';
+const browserLanguage=browserLocale.toLowerCase().split('-')[0];
+let lang=supportedLanguages.includes(browserLanguage)?browserLanguage:'en';
+try{const savedLanguage=localStorage.getItem(languageKey);if(supportedLanguages.includes(savedLanguage))lang=savedLanguage}catch(_){}
 const msg=k=>M[k][lang];const loc=s=>lang==='zh'?s:(dictionaries[lang][s]||s);const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const shuffleV=a=>{for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 function newGame(){return {version:3,finance:newFinance(),story:newStory(),turn:1,phase:'policy',money:65,pop:60,ai:0,hype:10,debt:3,tiles:initialTiles.map(([icon,name,traffic])=>({icon,name,traffic,type:'original'})),order:shuffleV([...cards.keys()]),selected:null,queue:[],lost:0,aiValue:0,spent:0,private:0,deficit:0,distressTurns:0,adminUsed:{},deferred:0,revised:false,loan:false,milestones:[],log:[],finished:false}}
@@ -590,7 +595,7 @@ let game,notice='';try{
  if(raw){const obj=JSON.parse(raw);if(valid(obj))game=obj;else notice='invalid51'}
  else{const old=localStorage.getItem('absurd-mayor-v02');if(old){const obj=JSON.parse(old);if(validV2(obj)){const copy=migrateV50(obj);if(valid(copy)){game=copy;notice='migrated51'}else notice='invalid51'}else notice='invalid51'}}
 }catch(_){notice='invalid51'}if(!game)game=newGame();game.adminUsed=game.adminUsed||{};game.deferred=game.deferred||0;game.tiles.forEach(t=>{if(t.type!=='original'&&!t.level)t.level=1});
-function persist(){try{localStorage.setItem(VKEY,JSON.stringify(game));localStorage.setItem('absurd-mayor-language',lang)}catch(_){}}
+function persist(){try{localStorage.setItem(VKEY,JSON.stringify(game))}catch(_){}}
 function metrics(g=game){let nominal=g.tiles.reduce((n,t)=>n+t.traffic,0),traffic=g.tiles[1].type==='original'&&g.tiles[2].type==='original'?nominal:0,supply=5,demand=0,ai=0,biz=0;g.tiles.forEach(t=>{if(t.type==='original'&&t.name==='舊變電站')supply+=3;if(t.type==='power')supply+=5;if(builds[t.type]){const b=builds[t.type],up=(t.level||1)===2;demand+=Math.max(0,b.power)+(up&&b.ai>0?1:0);ai+=b.ai+(up?Math.ceil(b.ai/2):0);if(up&&t.type==='power')supply+=3;if(t.type==='market')biz+=3+(up?1:0)}});return {nominal,traffic,airport:Math.floor(traffic/10),supply,demand,ai,biz,redeveloped:g.tiles.slice(0,5).filter(t=>t.type!=='original').length,parks:g.tiles.filter(t=>t.type==='park').length}}
 function promises(g=game){const m=metrics(g);return [g.ai>=50,m.parks>=2&&m.demand<=m.supply,!g.finance.legacy&&publicBurden(g)===0]}
 function endingKey(g=game){let m=metrics(g);if(m.demand>m.supply)return 'heater';if(m.redeveloped>=2&&g.ai>=50&&g.money>=0&&g.pop>=35&&g.debt<8&&g.aiValue>=g.lost)return 'miracle';if(m.parks>=3)return 'pigeon';if(g.hype>=45&&g.hype>g.ai*1.3)return 'ppt';return 'airport'}
@@ -827,7 +832,7 @@ document.addEventListener('keydown',e=>{
   e.preventDefault();(e.shiftKey?last:first).focus();
  }else if(!e.shiftKey&&active===last){e.preventDefault();first.focus()}
 });
-const language=document.createElement('label');language.className='lang';language.innerHTML='🌐 <select aria-label="Language">'+[['zh','繁體中文'],['en','English'],['fr','Français'],['nl','Nederlands']].map(([a,b])=>`<option value="${a}">${b}</option>`).join('')+'</select>';document.querySelector('.brand').after(language);let select=language.querySelector('select');select.value=lang;select.setAttribute('aria-label',languageName521());select.addEventListener('change',()=>{lang=select.value;select.setAttribute('aria-label',languageName521());let active=!!document.querySelector('#introtitle');drawV2();if(active)showIntro(notice)});
+const language=document.createElement('label');language.className='lang';language.innerHTML='🌐 <select aria-label="Language">'+[['zh','繁體中文'],['en','English'],['fr','Français'],['nl','Nederlands']].map(([a,b])=>`<option value="${a}">${b}</option>`).join('')+'</select>';document.querySelector('.brand').after(language);let select=language.querySelector('select');select.value=lang;select.setAttribute('aria-label',languageName521());select.addEventListener('change',()=>{lang=select.value;try{localStorage.setItem(languageKey,lang)}catch(_){}select.setAttribute('aria-label',languageName521());let active=!!document.querySelector('#introtitle');drawV2();if(active)showIntro(notice)});
 mountV51();drawV2();if(!game.finished&&game.turn===1&&game.phase==='policy')showIntro(notice);
 
 </script>
