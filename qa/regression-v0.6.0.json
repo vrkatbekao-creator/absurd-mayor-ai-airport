@@ -1,0 +1,94 @@
+{
+  "version": "0.6.0-S4",
+  "baseline": "0.5.2",
+  "seeds": 2000,
+  "scope": "Six fixed action routes, paired identical policy orders, all saved fields after policy/action/settlement, round-6 and completed-save reloads. No claim of exhaustive or optimal-policy balance.",
+  "pairedGames": 12000,
+  "simulatedGames": 24000,
+  "strategies": {
+    "private": {
+      "games": 2000,
+      "means": {
+        "money": 94.4265,
+        "pop": 59.7845,
+        "ai": 75.434,
+        "publicCost": 0,
+        "traffic": 35
+      },
+      "allPledges": 2000,
+      "endings": {
+        "miracle": 2000
+      }
+    },
+    "public": {
+      "games": 2000,
+      "means": {
+        "money": 25.4265,
+        "pop": 75.7365,
+        "ai": 113.434,
+        "publicCost": 76,
+        "traffic": 35
+      },
+      "allPledges": 0,
+      "endings": {
+        "miracle": 2000
+      }
+    },
+    "airport": {
+      "games": 2000,
+      "means": {
+        "money": 111.4265,
+        "pop": 42.3705,
+        "ai": 9.434,
+        "publicCost": 17,
+        "traffic": 80
+      },
+      "allPledges": 0,
+      "endings": {
+        "airport": 2000
+      }
+    },
+    "publicity": {
+      "games": 2000,
+      "means": {
+        "money": -12.4355,
+        "pop": 12.721,
+        "ai": 0,
+        "publicCost": 88.5275,
+        "traffic": 35
+      },
+      "allPledges": 0,
+      "endings": {
+        "ppt": 2000
+      }
+    },
+    "overbuild": {
+      "games": 2000,
+      "means": {
+        "money": -228.0925,
+        "pop": 24.0635,
+        "ai": 202.0065,
+        "publicCost": 304.0925,
+        "traffic": 0
+      },
+      "allPledges": 0,
+      "endings": {
+        "heater": 2000
+      }
+    },
+    "coexist": {
+      "games": 2000,
+      "means": {
+        "money": 139.4265,
+        "pop": 49.3315,
+        "ai": 61.434,
+        "publicCost": 0,
+        "traffic": 80
+      },
+      "allPledges": 2000,
+      "endings": {
+        "airport": 2000
+      }
+    }
+  }
+}

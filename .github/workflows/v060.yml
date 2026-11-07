@@ -1,0 +1,79 @@
+name: V0.6.0 map-first acceptance
+on:
+  pull_request:
+    paths:
+      - '荒謬市長_v0.6.0.html'
+      - 'assets/v060*'
+      - 'scripts/*v060*'
+      - 'tests/*v060*'
+      - '.github/workflows/v060.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Reproduce offline HTML and preserve releases
+        run: |
+          python3 scripts/build-v060.py
+          git diff --exit-code -- 荒謬市長_v0.6.0.html
+          node - <<'JS'
+          const fs=require('fs'),crypto=require('crypto'),assert=require('assert/strict');
+          const data=JSON.parse(fs.readFileSync('qa/releases-v060.json'));
+          for(const [file,expected] of Object.entries(data)){assert.equal(crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex'),expected,file)}
+          JS
+      - run: node --test tests/finance-v060.test.cjs tests/startup-v060.test.cjs tests/narrative-v060.test.cjs
+      - run: node scripts/regression-v060.cjs --seeds=2000
+      - name: Compare recorded paired regression data
+        run: |
+          node - <<'JS'
+          const fs=require('fs'),assert=require('assert/strict');
+          assert.deepEqual(JSON.parse(fs.readFileSync('artifacts/regression-v0.6.0.json')),JSON.parse(fs.readFileSync('qa/regression-v0.6.0.json')));
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v060-core-and-paired-regression
+          path: artifacts/regression-v0.6.0.json
+  browser:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.1-noble
+      options: --user 1001 --ipc=host
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --package-lock=false @playwright/test@1.56.1
+      - name: Run browser tests
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_FILE: artifacts/v060-browser-report.json
+        run: npx playwright test -c tests/v060-playwright.config.cjs --project=${{ matrix.browser }} --reporter=list,json
+      - name: Upload browser screenshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v060-screenshots-${{ matrix.browser }}
+          path: artifacts/v060-screenshots/
+          retention-days: 1
+      - name: Upload browser QA results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v060-browser-qa-${{ matrix.browser }}
+          path: |
+            artifacts/v060-browser-report.json
+            artifacts/v060-test-results/
+          retention-days: 14
