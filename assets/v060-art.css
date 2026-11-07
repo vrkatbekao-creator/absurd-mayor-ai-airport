@@ -14,3 +14,5 @@
 @media(max-width:600px){.c60-ending-art,.v0521-reading .v04-end-illustration .scene-emoji{width:114px;height:90px;flex:0 0 114px}}
 .city060 .c60-city.c60-night{background:radial-gradient(ellipse at 50% 58%,#304b45 0,#203c39 68%,#193430 100%)}
 .c60-zoomed{touch-action:pinch-zoom}
+/* Only the camera moves; browser focus must not scroll the clipped map layer. */
+.city060 .c60-city{overflow:clip}
