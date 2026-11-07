@@ -16,3 +16,4 @@
 .c60-zoomed{touch-action:pinch-zoom}
 /* Only the camera moves; browser focus must not scroll the clipped map layer. */
 .city060 .c60-city{overflow:clip}
+.c60-airport-overview{border-top:1px solid #c9d4bc;margin-top:10px}.c60-airport-overview dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 9px}.c60-airport-overview dl div{background:#e6eed8;border-radius:8px;padding:8px;overflow-wrap:anywhere}.c60-airport-overview dd{font-size:18px;font-weight:700;margin:3px 0 0}

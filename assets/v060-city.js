@@ -123,16 +123,15 @@
    if(button.dataset.v2==='admin')button.insertAdjacentHTML('afterbegin',comic(['investment','partnership','greenfund'].includes(button.dataset.type)?'💼':button.dataset.type==='consult'?'💬':'🔎'));
    else{const type=button.dataset.type||game.tiles[game.selected]?.type;if(builds[type])button.insertAdjacentHTML('afterbegin','<span class="c60-thumb" aria-hidden="true">'+v042Art(type,button.dataset.v2==='upgrade'?2:1,false,false)+'</span>')}
   });
-  // Keep real airport-wide comparisons together, never on individual plots.
-  if(game.phase==='build'&&actionView==='land'&&game.selected!==null){const tile=game.tiles[game.selected],event=action.querySelector('.event');
-   if(event){const paragraphs=[...event.querySelectorAll(':scope > p')];fullText(event,paragraphs,tr('details'));
-    if(tile.type==='original'){const m=metrics();event.insertAdjacentHTML('beforeend','<p class="c60-airport-total">'+esc(tr('airport')+' · '+tr('capacity')+' '+m.nominal+'/80 · '+tr('income')+' '+m.airport)+'</p>')}
-   }
+  // Plot panels describe the selected action; airport-wide capacity lives in Finance.
+  if(game.phase==='build'&&actionView==='land'&&game.selected!==null){const event=action.querySelector('.event');
+   if(event)fullText(event,[...event.querySelectorAll(':scope > p')],tr('details'));
   }
   if(game.phase==='settle'){const p=action.querySelector('.event p');if(p){const parent=p.parentElement;fullText(parent,[p],tr('details'))}}
  }
  function renderFinance(){const f=game.finance,available=f.capital.reduce((n,c)=>n+c.amount-c.used,0);financeVisual.innerHTML='<div class="c60-funds">'+[[tr('treasury'),game.money],[tr('private'),available],[tr('pending'),pendingBurden()]].map(([name,value])=>'<div class="c60-fund"><div class="c60-purse" aria-hidden="true">'+value+'</div><span>'+esc(name)+'</span><span class="v5-sr-only">'+value+'</span></div>').join('')+'</div><p>'+esc(tr('public')+': '+(f.legacy?tr('unknown')+' · ':'')+publicBurden())+'</p>';
   const due=f.obligations.filter(o=>!o.paid).sort((a,b)=>a.due-b.due);financeVisual.insertAdjacentHTML('beforeend',due.length?'<ol class="c60-timeline">'+due.map(o=>'<li>📅 '+esc(tr('due')+' '+o.due)+'<br><strong>'+o.amount+'</strong></li>').join('')+'</ol>':'<p class="hint">'+esc(tr('empty'))+'</p>');
+  const m=metrics();financeVisual.insertAdjacentHTML('beforeend','<details class="c60-full c60-airport-overview"><summary>'+esc(tr('airport'))+'</summary><dl><div><dt>'+esc(tr('capacity'))+'</dt><dd data-airport-capacity>'+m.nominal+'/80</dd></div><div><dt>'+esc(VIS[lang].traffic)+'</dt><dd data-airport-traffic>'+m.traffic+'/80</dd></div><div><dt>'+esc(tr('income'))+'</dt><dd data-airport-income>'+m.airport+'</dd></div></dl></details>');
  }
  function renderGoals(){const m=metrics(),p=promises(),labels=[msg('promise1'),msg('promise2'),msg('promise3')],values=[game.ai+'/50',m.parks+'/2',publicBurden()];goalVisual.innerHTML='<div class="c60-goals">'+labels.map((label,i)=>'<div class="c60-goal"><strong aria-hidden="true">'+['🧠','🌳','🏛️'][i]+'</strong><div><p>'+esc(label)+'</p><b>'+values[i]+(i===1?' · '+tr('power')+' '+m.supply+'/'+m.demand:'')+'</b></div><span class="stamp">'+esc(i===2&&game.finance.legacy?tr('unknown'):tr(p[i]?'met':'unmet'))+'</span></div>').join('')+'</div>'}
  function closeSheet(restore=true){ui.open=false;sheet.hidden=true;cityFit();updateGrowthBar();renderLifeUI();dock.querySelectorAll('button').forEach(b=>b.setAttribute('aria-expanded','false'));if(restore)(dock.querySelector('[data-city-view="'+ui.view+'"]')||dock.firstElementChild)?.focus({preventScroll:true})}
