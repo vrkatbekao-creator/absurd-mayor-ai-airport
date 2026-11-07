@@ -1,17 +1,18 @@
 <!doctype html>
-<html lang="zh-Hant">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="荒謬市長是一款四語、12 回合的開源城市策略小品。在機場、AI 園區和競選承諾之間，決定你要留下什麼樣的城市。">
+  <meta name="description" data-i18n="description" data-i18n-attr="content" content="An open-source, 12-turn city strategy game about a working airport, an AI district and campaign promises.">
   <meta name="theme-color" content="#112d29">
-  <title>荒謬市長｜AI 起飛，飛機停飛！</title>
+  <title data-i18n="pageTitle">Absurd Mayor | AI takes off, planes grounded!</title>
+  <script src="language.js" defer></script>
   <style>
     :root { color-scheme: light; --ink:#18332e; --muted:#48605a; --paper:#f5f1e5; --dark:#112d29; --light:#fbf4db; --lime:#e4ee9d; --line:#c9cdb9; }
     * { box-sizing:border-box; }
     body { margin:0; background:var(--paper); color:var(--ink); font:1rem/1.65 system-ui,sans-serif; }
     a { color:inherit; text-underline-offset:.2em; }
-    a:focus-visible { outline:3px solid #c75218; outline-offset:5px; }
+    a:focus-visible, select:focus-visible { outline:3px solid #c75218; outline-offset:5px; }
     img { display:block; width:100%; height:auto; }
     h1,h2,p,figure,ol { margin:0; }
     h1,h2 { line-height:1.15; letter-spacing:-.035em; }
@@ -22,8 +23,9 @@
     .mast { background:var(--dark); color:var(--light); }
     .bar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.7rem 1.4rem; padding-block:1.05rem; border-bottom:1px solid #50655b; }
     .brand,.eyebrow { font-size:.8rem; font-weight:750; letter-spacing:.14em; }
-    .bar nav,.links { display:flex; flex-wrap:wrap; gap:.55rem 1.15rem; }
+    .header-tools,.bar nav,.links { display:flex; flex-wrap:wrap; align-items:center; gap:.55rem 1.15rem; }
     .bar nav a { padding-block:.3rem; }
+    .language { min-height:44px; max-width:100%; padding:.4rem .55rem; border:1px solid #83978a; border-radius:.45rem; background:var(--dark); color:var(--light); font:inherit; }
     .hero { display:grid; grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr); gap:clamp(1.5rem,5vw,4rem); align-items:center; padding-block:clamp(2.4rem,6vw,5rem); }
     .hero h1 { font-size:clamp(3rem,7vw,6rem); margin:.55rem 0 .6rem; }
     .slogan { color:var(--lime); font-weight:800; font-size:clamp(1.28rem,2.8vw,2rem); }
@@ -42,7 +44,7 @@
     .section .eyebrow { margin-bottom:.5rem; color:var(--muted); }
     .steps { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1.25rem; margin-top:1.5rem; padding:0; list-style:none; }
     .steps li { border-top:1px solid var(--line); padding-top:.85rem; }
-    .steps span { display:block; color:var(--muted); font:700 .8rem/1.4 ui-monospace,monospace; }
+    .step-number { display:block; color:var(--muted); font:700 .8rem/1.4 ui-monospace,monospace; }
     .steps strong { display:block; font-size:1.15rem; margin:.35rem 0; }
     .screens { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,2.1fr) minmax(0,1fr); gap:clamp(1rem,3vw,2rem); align-items:start; border-top:1px solid var(--line); }
     .screens p { margin-top:.85rem; }
@@ -64,75 +66,82 @@
   </style>
 </head>
 <body>
-  <a class="skip" href="#main">跳至主要內容</a>
+  <a class="skip" href="#main" data-i18n="skip">Skip to main content</a>
   <header class="mast">
     <div class="bar wrap">
       <p class="brand" lang="en">ABSURD MAYOR</p>
-      <nav aria-label="網站導覽">
-        <a href="#play">怎麼玩</a>
-        <a href="#screens">遊戲畫面</a>
-        <a href="https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport">GitHub</a>
-      </nav>
+      <div class="header-tools">
+        <nav aria-label="Site navigation" data-i18n="navigation" data-i18n-attr="aria-label">
+          <a href="#play" data-i18n="navPlay">How to play</a>
+          <a href="#screens" data-i18n="navScreens">Screenshots</a>
+          <a href="https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport">GitHub</a>
+        </nav>
+        <select id="site-language" class="language" aria-label="Page language" data-i18n="language" data-i18n-attr="aria-label" hidden>
+          <option value="zh" lang="zh-Hant">繁體中文</option>
+          <option value="en" lang="en">English</option>
+          <option value="fr" lang="fr">Français</option>
+          <option value="nl" lang="nl">Nederlands</option>
+        </select>
+      </div>
     </div>
   </header>
   <main id="main" tabindex="-1">
     <div class="mast">
       <section class="hero wrap" aria-labelledby="title">
         <div>
-          <p class="eyebrow">V0.6.0 · 開源城市策略小品</p>
-          <h1 id="title">荒謬市長</h1>
-          <p class="slogan">AI 起飛，飛機停飛！</p>
-          <p class="intro">機場明明還在營運，市府卻宣布要改建成 AI 園區。接下來 12 回合，機場要留下多少、城市要花多少、競選承諾要怎麼兌現，都由你決定。</p>
+          <p class="eyebrow" data-i18n="edition">V0.6.0 · Open-source city strategy game</p>
+          <h1 id="title" data-i18n="title">Absurd Mayor</h1>
+          <p class="slogan" data-i18n="slogan">AI takes off, planes grounded!</p>
+          <p class="intro" data-i18n="intro">The airport is still operating, but city hall has announced plans to turn it into an AI district. You have 12 turns to decide how much of the airport to keep, what the city can afford and which campaign promises to fulfil.</p>
           <div class="actions">
-            <a class="button primary" href="play.html">線上試玩 <span aria-hidden="true">&nbsp;↗</span></a>
-            <a class="button" href="play.html" download="荒謬市長_v0.6.0.html">下載離線版</a>
+            <a class="button primary" href="play.html"><span data-i18n="playOnline">Play online</span><span aria-hidden="true">&nbsp;↗</span></a>
+            <a class="button" href="play.html" download="荒謬市長_v0.6.0.html" data-i18n="download">Download offline edition</a>
           </div>
-          <p class="facts"><span>繁體中文</span><span lang="en">English</span><span lang="fr">Français</span><span lang="nl">Nederlands</span></p>
+          <p class="facts"><span lang="zh-Hant">繁體中文</span><span lang="en">English</span><span lang="fr">Français</span><span lang="nl">Nederlands</span></p>
         </div>
         <figure>
-          <img src="media/city-night.webp" width="1024" height="900" alt="遊戲夜景中，跑道旁蓋起數棟不同高度的建築，底部顯示市政操作列">
-          <figcaption>V0.6.0 實機畫面 · 第 12 回合的機場小城</figcaption>
+          <img src="media/city-night.webp" width="1024" height="900" data-i18n="nightAlt" data-i18n-attr="alt" alt="Buildings of different heights stand beside the runway at night, with city controls along the bottom.">
+          <figcaption data-i18n="nightCaption">V0.6.0 screenshot · Airport city on turn 12</figcaption>
         </figure>
       </section>
     </div>
   <section class="section wrap" id="play" aria-labelledby="play-title">
-    <p class="eyebrow">12 回合任期</p>
-    <h2 id="play-title">一回合，三個步驟</h2>
+    <p class="eyebrow" data-i18n="term">A 12-turn term</p>
+    <h2 id="play-title" data-i18n="turnTitle">Three steps per turn</h2>
     <ol class="steps">
-      <li><span aria-hidden="true">01</span><strong>選一項政策</strong>看清眼前收益、政治代價與延後影響，再從三個選項中決定。</li>
-      <li><span aria-hidden="true">02</span><strong>做一項市政行動</strong>建設、升級、執行行政措施，或暫緩行動。</li>
-      <li><span aria-hidden="true">03</span><strong>結算並看城市變化</strong>檢查航班、財政、民意與 AI 產業實績，再進入下一回合。</li>
+      <li><span class="step-number" aria-hidden="true">01</span><strong data-i18n="step1Title">Choose a policy</strong><p data-i18n="step1">Weigh the immediate benefits, political costs and delayed effects of three options.</p></li>
+      <li><span class="step-number" aria-hidden="true">02</span><strong data-i18n="step2Title">Take a city action</strong><p data-i18n="step2">Build, upgrade, enact a city measure or defer action.</p></li>
+      <li><span class="step-number" aria-hidden="true">03</span><strong data-i18n="step3Title">Review the results</strong><p data-i18n="step3">Check flights, finances, public support and AI output before the next turn.</p></li>
     </ol>
   </section>
   <section class="section screens wrap" id="screens" aria-labelledby="screens-title">
     <div>
-      <p class="eyebrow">V0.6.0 實機畫面</p>
-      <h2 id="screens-title">從地圖讀城市</h2>
-      <p>建築會逐層長高。手機上的政策與財政從底部浮出，圖示、數值先呈現重點，完整說明可展開。</p>
+      <p class="eyebrow" data-i18n="screensEdition">V0.6.0 screenshots</p>
+      <h2 id="screens-title" data-i18n="screensTitle">Read the city from the map</h2>
+      <p data-i18n="screensText">Buildings rise floor by floor. On phones, policy and finance panels open from the bottom. Icons and figures show the essentials, and you can expand the full details.</p>
     </div>
     <figure>
-      <img src="media/city-day.webp" width="1024" height="900" loading="lazy" alt="白天的等角城市地圖可見跑道、塔樓、園區與綠地">
-      <figcaption>城市日景與底部市政操作列</figcaption>
+      <img src="media/city-day.webp" width="1024" height="900" loading="lazy" data-i18n="dayAlt" data-i18n-attr="alt" alt="Daytime isometric city map showing a runway, towers, the AI district and green space.">
+      <figcaption data-i18n="dayCaption">Daytime city and bottom controls</figcaption>
     </figure>
     <figure>
-      <img src="media/mobile-decision.webp" width="390" height="844" loading="lazy" alt="手機上顯示跑道夜市政策和三個圖像化選項，各選項標出財政、民意或政見變化">
-      <figcaption>手機上的政策選擇</figcaption>
+      <img src="media/mobile-decision.webp" width="390" height="844" loading="lazy" data-i18n="mobileAlt" data-i18n-attr="alt" alt="Phone screen showing a runway night-market proposal and three illustrated choices with their effects.">
+      <figcaption data-i18n="mobileCaption">Choosing a policy on a phone</figcaption>
     </figure>
   </section>
   <section class="section project" aria-labelledby="project-title">
     <div class="wrap">
-      <p class="eyebrow">公開原始碼 · MIT</p>
-      <h2 id="project-title">遊戲與原始碼都能帶走</h2>
-      <p>離線版只需一個 HTML 檔，下載後以瀏覽器開啟。遊戲進度儲存在瀏覽器，線上版和本機檔案的儲存空間可能不同。</p>
-      <p lang="en">A 12-turn city strategy game about a working airport, an AI district and campaign promises. Play in Traditional Chinese, English, French or Dutch.</p>
+      <p class="eyebrow" data-i18n="licenseTag">Open source · MIT</p>
+      <h2 id="project-title" data-i18n="projectTitle">Take the game and its source with you</h2>
+      <p data-i18n="projectText">Download the single HTML file and open it in a browser to play offline. Progress is saved in your browser. The online and offline editions may use separate storage.</p>
       <div class="links">
-        <a href="https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport">原始碼與專案說明</a>
-        <a href="https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/blob/main/QA_REPORT_v0.6.0-S4.md">V0.6.0 驗收記錄</a>
-        <a href="LICENSE.txt">MIT 授權</a>
+        <a href="https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport" data-i18n="source">Source code and project notes</a>
+        <a href="https://github.com/vrkatbekao-creator/absurd-mayor-ai-airport/blob/main/QA_REPORT_v0.6.0-S4.md" data-i18n="qa">V0.6.0 test report</a>
+        <a href="LICENSE.txt" data-i18n="license">MIT licence</a>
       </div>
     </div>
   </section>
   </main>
-  <footer><div class="wrap">荒謬市長 · Absurd Mayor · V0.6.0</div></footer>
+  <footer><div class="wrap" data-i18n="footer">Absurd Mayor · V0.6.0</div></footer>
 </body>
 </html>
